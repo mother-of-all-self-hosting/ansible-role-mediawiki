@@ -1,0 +1,27 @@
+# SPDX-FileCopyrightText: 2023 Slavi Pantaleev
+# SPDX-FileCopyrightText: 2025 Suguru Hirahara
+#
+# SPDX-License-Identifier: AGPL-3.0-or-later
+
+---
+- name: Perform LLDAP installation tasks
+  when: lldap_enabled | bool
+  tags:
+    - setup-all
+    - setup-lldap
+    - install-all
+    - install-lldap
+  block:
+    - name: Validate LLDAP configuration
+      ansible.builtin.include_tasks: "{{ role_path }}/tasks/validate_config.yml"
+    - name: Install LLDAP
+      ansible.builtin.include_tasks: "{{ role_path }}/tasks/install.yml"
+
+- name: Perform LLDAP uninstallation tasks
+  when: not lldap_enabled | bool
+  tags:
+    - setup-all
+    - setup-lldap
+  block:
+    - name: Uninstall LLDAP
+      ansible.builtin.include_tasks: "{{ role_path }}/tasks/uninstall.yml"
