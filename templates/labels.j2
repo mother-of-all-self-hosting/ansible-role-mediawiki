@@ -5,55 +5,55 @@ SPDX-FileCopyrightText: 2025 Suguru Hirahara
 SPDX-License-Identifier: AGPL-3.0-or-later
 #}
 
-{% if lldap_container_labels_traefik_enabled %}
+{% if mediawiki_container_labels_traefik_enabled %}
 traefik.enable=true
 
-{% if lldap_container_labels_traefik_docker_network %}
-traefik.docker.network={{ lldap_container_labels_traefik_docker_network }}
+{% if mediawiki_container_labels_traefik_docker_network %}
+traefik.docker.network={{ mediawiki_container_labels_traefik_docker_network }}
 {% endif %}
 
 {% set middlewares = [] %}
 
-{% if lldap_container_labels_traefik_path_prefix != '/' %}
-traefik.http.middlewares.{{ lldap_identifier }}-slashless-redirect.redirectregex.regex=^({{ lldap_container_labels_traefik_path_prefix | quote }})$
-traefik.http.middlewares.{{ lldap_identifier }}-slashless-redirect.redirectregex.replacement=${1}/
-{% set middlewares = middlewares + [lldap_identifier + '-slashless-redirect'] %}
+{% if mediawiki_container_labels_traefik_path_prefix != '/' %}
+traefik.http.middlewares.{{ mediawiki_identifier }}-slashless-redirect.redirectregex.regex=^({{ mediawiki_container_labels_traefik_path_prefix | quote }})$
+traefik.http.middlewares.{{ mediawiki_identifier }}-slashless-redirect.redirectregex.replacement=${1}/
+{% set middlewares = middlewares + [mediawiki_identifier + '-slashless-redirect'] %}
 {% endif %}
 
-{% if lldap_container_labels_traefik_path_prefix != '/' %}
-traefik.http.middlewares.{{ lldap_identifier }}-strip-prefix.stripprefix.prefixes={{ lldap_container_labels_traefik_path_prefix }}
-{% set middlewares = middlewares + [lldap_identifier + '-strip-prefix'] %}
+{% if mediawiki_container_labels_traefik_path_prefix != '/' %}
+traefik.http.middlewares.{{ mediawiki_identifier }}-strip-prefix.stripprefix.prefixes={{ mediawiki_container_labels_traefik_path_prefix }}
+{% set middlewares = middlewares + [mediawiki_identifier + '-strip-prefix'] %}
 {% endif %}
 
-{% if lldap_container_labels_traefik_additional_request_headers.keys() | length > 0 %}
-{% for name, value in lldap_container_labels_traefik_additional_request_headers.items() %}
-traefik.http.middlewares.{{ lldap_identifier }}-add-request-headers.headers.customrequestheaders.{{ name }}={{ value }}
+{% if mediawiki_container_labels_traefik_additional_request_headers.keys() | length > 0 %}
+{% for name, value in mediawiki_container_labels_traefik_additional_request_headers.items() %}
+traefik.http.middlewares.{{ mediawiki_identifier }}-add-request-headers.headers.customrequestheaders.{{ name }}={{ value }}
 {% endfor %}
-{% set middlewares = middlewares + [lldap_identifier + '-add-request-headers'] %}
+{% set middlewares = middlewares + [mediawiki_identifier + '-add-request-headers'] %}
 {% endif %}
 
-{% if lldap_container_labels_traefik_additional_response_headers.keys() | length > 0 %}
-{% for name, value in lldap_container_labels_traefik_additional_response_headers.items() %}
-traefik.http.middlewares.{{ lldap_identifier }}-add-response-headers.headers.customresponseheaders.{{ name }}={{ value }}
+{% if mediawiki_container_labels_traefik_additional_response_headers.keys() | length > 0 %}
+{% for name, value in mediawiki_container_labels_traefik_additional_response_headers.items() %}
+traefik.http.middlewares.{{ mediawiki_identifier }}-add-response-headers.headers.customresponseheaders.{{ name }}={{ value }}
 {% endfor %}
-{% set middlewares = middlewares + [lldap_identifier + '-add-response-headers'] %}
+{% set middlewares = middlewares + [mediawiki_identifier + '-add-response-headers'] %}
 {% endif %}
 
-traefik.http.routers.{{ lldap_identifier }}.rule={{ lldap_container_labels_traefik_rule }}
-{% if lldap_container_labels_traefik_priority | int > 0 %}
-traefik.http.routers.{{ lldap_identifier }}.priority={{ lldap_container_labels_traefik_priority }}
+traefik.http.routers.{{ mediawiki_identifier }}.rule={{ mediawiki_container_labels_traefik_rule }}
+{% if mediawiki_container_labels_traefik_priority | int > 0 %}
+traefik.http.routers.{{ mediawiki_identifier }}.priority={{ mediawiki_container_labels_traefik_priority }}
 {% endif %}
-traefik.http.routers.{{ lldap_identifier }}.service={{ lldap_identifier }}
+traefik.http.routers.{{ mediawiki_identifier }}.service={{ mediawiki_identifier }}
 {% if middlewares | length > 0 %}
-traefik.http.routers.{{ lldap_identifier }}.middlewares={{ middlewares | join(',') }}
+traefik.http.routers.{{ mediawiki_identifier }}.middlewares={{ middlewares | join(',') }}
 {% endif %}
-traefik.http.routers.{{ lldap_identifier }}.entrypoints={{ lldap_container_labels_traefik_entrypoints }}
-traefik.http.routers.{{ lldap_identifier }}.tls={{ lldap_container_labels_traefik_tls | to_json }}
-{% if lldap_container_labels_traefik_tls %}
-traefik.http.routers.{{ lldap_identifier }}.tls.certResolver={{ lldap_container_labels_traefik_tls_certResolver }}
-{% endif %}
-
-traefik.http.services.{{ lldap_identifier }}.loadbalancer.server.port={{ lldap_container_http_port }}
+traefik.http.routers.{{ mediawiki_identifier }}.entrypoints={{ mediawiki_container_labels_traefik_entrypoints }}
+traefik.http.routers.{{ mediawiki_identifier }}.tls={{ mediawiki_container_labels_traefik_tls | to_json }}
+{% if mediawiki_container_labels_traefik_tls %}
+traefik.http.routers.{{ mediawiki_identifier }}.tls.certResolver={{ mediawiki_container_labels_traefik_tls_certResolver }}
 {% endif %}
 
-{{ lldap_container_labels_additional_labels }}
+traefik.http.services.{{ mediawiki_identifier }}.loadbalancer.server.port={{ mediawiki_container_http_port }}
+{% endif %}
+
+{{ mediawiki_container_labels_additional_labels }}

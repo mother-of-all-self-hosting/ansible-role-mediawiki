@@ -2,9 +2,9 @@
 galaxy_info:
   author: Suguru Hirahara
   company: progressiv
-  role_name: lldap
+  role_name: mediawiki
   namespace: progressiv
-  description: LLDAP
+  description: MediaWiki
   platforms:
     - name: Debian
       versions:

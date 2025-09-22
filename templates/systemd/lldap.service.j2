@@ -7,12 +7,12 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 #}
 
 [Unit]
-Description=LLDAP ({{ lldap_identifier }})
-{% for service in lldap_systemd_required_services_list %}
+Description=MediaWiki ({{ mediawiki_identifier }})
+{% for service in mediawiki_systemd_required_services_list %}
 Requires={{ service }}
 After={{ service }}
 {% endfor %}
-{% for service in lldap_systemd_wanted_services_list %}
+{% for service in mediawiki_systemd_wanted_services_list %}
 Wants={{ service }}
 {% endfor %}
 DefaultDependencies=no
@@ -20,48 +20,48 @@ DefaultDependencies=no
 [Service]
 Type=simple
 Environment="HOME={{ devture_systemd_docker_base_systemd_unit_home_path }}"
-ExecStartPre=-{{ devture_systemd_docker_base_host_command_sh }} -c '{{ devture_systemd_docker_base_host_command_docker }} stop -t {{ devture_systemd_docker_base_container_stop_grace_time_seconds }} {{ lldap_identifier }} 2>/dev/null || true'
-ExecStartPre=-{{ devture_systemd_docker_base_host_command_sh }} -c '{{ devture_systemd_docker_base_host_command_docker }} rm {{ lldap_identifier }} 2>/dev/null || true'
+ExecStartPre=-{{ devture_systemd_docker_base_host_command_sh }} -c '{{ devture_systemd_docker_base_host_command_docker }} stop -t {{ devture_systemd_docker_base_container_stop_grace_time_seconds }} {{ mediawiki_identifier }} 2>/dev/null || true'
+ExecStartPre=-{{ devture_systemd_docker_base_host_command_sh }} -c '{{ devture_systemd_docker_base_host_command_docker }} rm {{ mediawiki_identifier }} 2>/dev/null || true'
 
 ExecStartPre={{ devture_systemd_docker_base_host_command_docker }} create \
       --rm \
-      --name={{ lldap_identifier }} \
+      --name={{ mediawiki_identifier }} \
       --log-driver=none \
-      --user={{ lldap_uid }}:{{ lldap_gid }} \
+      --user={{ mediawiki_uid }}:{{ mediawiki_gid }} \
       --cap-drop=ALL \
-      --network={{ lldap_container_network }} \
-      {% if lldap_container_http_host_bind_port %}
-      -p {{ lldap_container_http_host_bind_port }}:{{ lldap_container_http_port }} \
+      --network={{ mediawiki_container_network }} \
+      {% if mediawiki_container_http_host_bind_port %}
+      -p {{ mediawiki_container_http_host_bind_port }}:{{ mediawiki_container_http_port }} \
       {% endif %}
-      {% if lldap_container_ldap_host_bind_port %}
-      -p {{ lldap_container_ldap_host_bind_port }}:{{ lldap_container_ldap_port }} \
+      {% if mediawiki_container_ldap_host_bind_port %}
+      -p {{ mediawiki_container_ldap_host_bind_port }}:{{ mediawiki_container_ldap_port }} \
       {% endif %}
-      {% if lldap_container_ldaps_host_bind_port %}
-      -p {{ lldap_container_ldaps_host_bind_port }}:{{ lldap_container_ldaps_port }} \
+      {% if mediawiki_container_ldaps_host_bind_port %}
+      -p {{ mediawiki_container_ldaps_host_bind_port }}:{{ mediawiki_container_ldaps_port }} \
       {% endif %}
-      --env-file={{ lldap_base_path }}/env \
-      --label-file={{ lldap_base_path }}/labels \
-      --mount type=bind,src={{ lldap_data_path }},dst=/data \
-      {% for volume in lldap_container_additional_volumes %}
+      --env-file={{ mediawiki_base_path }}/env \
+      --label-file={{ mediawiki_base_path }}/labels \
+      --mount type=bind,src={{ mediawiki_data_path }},dst=/data \
+      {% for volume in mediawiki_container_additional_volumes %}
       --mount type={{ volume.type | default('bind' if '/' in volume.src else 'volume') }},src={{ volume.src }},dst={{ volume.dst }}{{ (',' + volume.options) if volume.options else '' }} \
       {% endfor %}
-      {% for arg in lldap_container_extra_arguments %}
+      {% for arg in mediawiki_container_extra_arguments %}
       {{ arg }} \
       {% endfor %}
-      {{ lldap_container_image_self_build_name if lldap_container_image_self_build else lldap_container_image }}
+      {{ mediawiki_container_image_self_build_name if mediawiki_container_image_self_build else mediawiki_container_image }}
 
-{% for network in lldap_container_additional_networks %}
-ExecStartPre={{ devture_systemd_docker_base_host_command_docker }} network connect {{ network }} {{ lldap_identifier }}
+{% for network in mediawiki_container_additional_networks %}
+ExecStartPre={{ devture_systemd_docker_base_host_command_docker }} network connect {{ network }} {{ mediawiki_identifier }}
 {% endfor %}
 
-ExecStart={{ devture_systemd_docker_base_host_command_docker }} start --attach {{ lldap_identifier }}
+ExecStart={{ devture_systemd_docker_base_host_command_docker }} start --attach {{ mediawiki_identifier }}
 
-ExecStop=-{{ devture_systemd_docker_base_host_command_sh }} -c '{{ devture_systemd_docker_base_host_command_docker }} stop -t {{ devture_systemd_docker_base_container_stop_grace_time_seconds }} {{ lldap_identifier }} 2>/dev/null || true'
-ExecStop=-{{ devture_systemd_docker_base_host_command_sh }} -c '{{ devture_systemd_docker_base_host_command_docker }} rm {{ lldap_identifier }} 2>/dev/null || true'
+ExecStop=-{{ devture_systemd_docker_base_host_command_sh }} -c '{{ devture_systemd_docker_base_host_command_docker }} stop -t {{ devture_systemd_docker_base_container_stop_grace_time_seconds }} {{ mediawiki_identifier }} 2>/dev/null || true'
+ExecStop=-{{ devture_systemd_docker_base_host_command_sh }} -c '{{ devture_systemd_docker_base_host_command_docker }} rm {{ mediawiki_identifier }} 2>/dev/null || true'
 
 Restart=always
 RestartSec=30
-SyslogIdentifier={{ lldap_identifier }}
+SyslogIdentifier={{ mediawiki_identifier }}
 
 [Install]
 WantedBy=multi-user.target

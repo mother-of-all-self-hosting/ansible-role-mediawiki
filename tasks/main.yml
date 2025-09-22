@@ -4,24 +4,24 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 
 ---
-- name: Perform LLDAP installation tasks
-  when: lldap_enabled | bool
+- name: Perform MediaWiki installation tasks
+  when: mediawiki_enabled | bool
   tags:
     - setup-all
-    - setup-lldap
+    - setup-mediawiki
     - install-all
-    - install-lldap
+    - install-mediawiki
   block:
-    - name: Validate LLDAP configuration
+    - name: Validate MediaWiki configuration
       ansible.builtin.include_tasks: "{{ role_path }}/tasks/validate_config.yml"
-    - name: Install LLDAP
+    - name: Install MediaWiki
       ansible.builtin.include_tasks: "{{ role_path }}/tasks/install.yml"
 
-- name: Perform LLDAP uninstallation tasks
-  when: not lldap_enabled | bool
+- name: Perform MediaWiki uninstallation tasks
+  when: not mediawiki_enabled | bool
   tags:
     - setup-all
-    - setup-lldap
+    - setup-mediawiki
   block:
-    - name: Uninstall LLDAP
+    - name: Uninstall MediaWiki
       ansible.builtin.include_tasks: "{{ role_path }}/tasks/uninstall.yml"
