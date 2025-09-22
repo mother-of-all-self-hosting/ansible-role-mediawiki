@@ -52,27 +52,11 @@ mediawiki_container_image_self_build_repo_dockerfile_dir_base: apache
 # Takes an "<ip>:<port>" or "<port>" value (e.g. "127.0.0.1:2586"), or empty string to not expose.
 mediawiki_container_http_host_bind_port: ''
 
-# Controls whether the container exposes its LDAP port (tcp/3890 in the container).
-#
-# Takes an "<ip>:<port>" or "<port>" value (e.g. "127.0.0.1:2586"), or empty string to not expose.
-mediawiki_container_ldap_host_bind_port: ''
-
-# Controls whether the container exposes its LDAPS port (tcp/6360 in the container).
-#
-# Takes an "<ip>:<port>" or "<port>" value (e.g. "127.0.0.1:2586"), or empty string to not expose.
-mediawiki_container_ldaps_host_bind_port: ''
-
 # The base container network. It will be auto-created by this role if it doesn't exist already.
 mediawiki_container_network: "{{ mediawiki_identifier }}"
 
 # The port number in the container
-mediawiki_container_http_port: 17170
-
-# The port number in the container
-mediawiki_container_ldap_port: 3890
-
-# The port number in the container
-mediawiki_container_ldaps_port: 6360
+mediawiki_container_http_port: 80
 
 # A list of additional container networks that the container would be connected to.
 # The role does not create these networks, so make sure they already exist.

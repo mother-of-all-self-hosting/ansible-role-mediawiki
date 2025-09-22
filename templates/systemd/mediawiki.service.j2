@@ -33,12 +33,6 @@ ExecStartPre={{ devture_systemd_docker_base_host_command_docker }} create \
       {% if mediawiki_container_http_host_bind_port %}
       -p {{ mediawiki_container_http_host_bind_port }}:{{ mediawiki_container_http_port }} \
       {% endif %}
-      {% if mediawiki_container_ldap_host_bind_port %}
-      -p {{ mediawiki_container_ldap_host_bind_port }}:{{ mediawiki_container_ldap_port }} \
-      {% endif %}
-      {% if mediawiki_container_ldaps_host_bind_port %}
-      -p {{ mediawiki_container_ldaps_host_bind_port }}:{{ mediawiki_container_ldaps_port }} \
-      {% endif %}
       --env-file={{ mediawiki_base_path }}/env \
       --label-file={{ mediawiki_base_path }}/labels \
       --mount type=bind,src={{ mediawiki_data_path }},dst=/data \
