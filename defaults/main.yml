@@ -40,10 +40,12 @@ mediawiki_container_image_registry_prefix_upstream_default: docker.io/
 mediawiki_container_image_force_pull: "{{ mediawiki_container_image.endswith(':latest') }}"
 
 mediawiki_container_image_self_build: false
-mediawiki_container_image_self_build_name: "mediawiki/mediawiki:{{ mediawiki_container_image_self_build_repo_version }}"
-mediawiki_container_image_self_build_repo: "https://github.com/mediawiki/mediawiki.git"
+mediawiki_container_image_self_build_name: "wikimedia/mediawiki-docker:{{ mediawiki_container_image_self_build_repo_version }}"
+mediawiki_container_image_self_build_repo: "https://github.com/wikimedia/mediawiki-docker.git"
 mediawiki_container_image_self_build_repo_version: "{{ mediawiki_version if mediawiki_version != 'latest' else 'main' }}"
 mediawiki_container_image_self_build_src_files_path: "{{ mediawiki_base_path }}/docker-src"
+mediawiki_container_image_self_build_repo_dockerfile_dir: "{{ mediawiki_container_image_self_build_src_files_path }}/wikimedia/mediawiki-docker/{{ mediawiki_version.split('.')[0] }}.{{ mediawiki_version.split('.')[1] }}/{{ mediawiki_container_image_self_build_repo_dockerfile_dir_base }}"
+mediawiki_container_image_self_build_repo_dockerfile_dir_base: apache
 
 # Controls whether the container exposes its HTTP port (tcp/80 in the container).
 #
