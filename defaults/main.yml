@@ -8,16 +8,14 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 
 ---
-# Project source code URL: https://github.com/thedevs-network/mediawiki
-
 mediawiki_enabled: true
 
 mediawiki_identifier: mediawiki
 mediawiki_base_path: "/{{ mediawiki_identifier }}"
 mediawiki_data_path: "{{ mediawiki_base_path }}/data"
 
-# renovate: datasource=docker depName=mediawiki/mediawiki
-mediawiki_version: v0.6.2
+# renovate: datasource=docker depName=mediawiki
+mediawiki_version: 1.44.0
 
 mediawiki_uid: ''
 mediawiki_gid: ''
@@ -34,8 +32,8 @@ mediawiki_hostname: ''
 # technical limitations.
 mediawiki_path_prefix: /
 
-mediawiki_container_image: "{{ mediawiki_container_image_registry_prefix }}mediawiki/mediawiki:{{ mediawiki_container_image_tag }}"
-mediawiki_container_image_tag: "{{ mediawiki_version }}-alpine-rootless"
+mediawiki_container_image: "{{ mediawiki_container_image_registry_prefix }}mediawiki:{{ mediawiki_container_image_tag }}"
+mediawiki_container_image_tag: "{{ mediawiki_version }}"
 mediawiki_container_image_registry_prefix: "{{ mediawiki_container_image_registry_prefix_upstream }}"
 mediawiki_container_image_registry_prefix_upstream: "{{ mediawiki_container_image_registry_prefix_upstream_default }}"
 mediawiki_container_image_registry_prefix_upstream_default: docker.io/
