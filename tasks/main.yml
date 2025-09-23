@@ -17,6 +17,14 @@
     - name: Install MediaWiki
       ansible.builtin.include_tasks: "{{ role_path }}/tasks/install.yml"
 
+- name: Perform tasks to adjust Mediawiki configurations
+  when: mediawiki_enabled | bool
+  tags:
+    - adjust-config-mediawiki
+  block:
+    - name: Update MediaWiki configurations on LocalSettings.php
+      ansible.builtin.include_tasks: "{{ role_path }}/tasks/adjust_config.yml"
+
 - name: Perform tasks to install Mediawiki with CLI
   when: mediawiki_enabled | bool
   tags:

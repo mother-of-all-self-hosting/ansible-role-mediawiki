@@ -1,0 +1,26 @@
+# SPDX-FileCopyrightText: 2025 Suguru Hirahara
+#
+# SPDX-License-Identifier: AGPL-3.0-or-later
+
+---
+- name: Replace MediaWiki configuration settings
+  ansible.builtin.replace:
+    path: "{{ mediawiki_config_path }}/LocalSettings.php"
+    regexp: "{{ item.regexp }}"
+    replace: "{{ item.replace }}"
+  with_items:
+    - { regexp: 'wgLanguageCode = "(.*?)";', replace: 'wgLanguageCode = "{{ mediawiki_config_lang }}";' }
+    - { regexp: 'wgScriptPath = "(.*?)";', replace: 'wgScriptPath = "{{ mediawiki_config_scriptpath }}";' }
+    - { regexp: 'wgServer = "(.*?)";', replace: 'wgServer = "{{ mediawiki_scheme }}://{{ mediawiki_hostname }}";' }
+    - { regexp: 'wgSitename = "(.*?)";', replace: 'wgSitename = "{{ mediawiki_config_sitename }}";' }
+
+- name: Notify users to restart the MediaWiki service
+  ansible.builtin.set_fact:
+    devture_playbook_runtime_messages_list: |
+      {{
+        devture_playbook_runtime_messages_list | default([])
+        +
+        [
+          "Note: make sure to mount `LocalSettings.php` if not and restart the MediaWiki service (`"+ mediawiki_identifier + "`) to reflect the change."
+        ]
+      }}

@@ -144,9 +144,17 @@ ansible-playbook -i inventory/hosts setup.yml --tags=install-cli-mediawiki -e ad
 >[!NOTE]
 > Make sure to take a note of the username and password as they are not stored as a plain text.
 
+### Updating LocalSettings.php
+
+If you have changed default configurations on `LocalSettings.php` with variables `mediawiki_config_*`, do not forget to run the command below to update the file:
+
+```sh
+ansible-playbook -i inventory/hosts setup.yml --tags=adjust-config-mediawiki
+```
+
 ### Loading LocalSettings.php
 
-After running the command, add the following configuration to your `vars.yml` file and restart the service to mount `LocalSettings.php` file inside the MediaWiki's container:
+Finally, add the following configuration to your `vars.yml` file and restart the service to mount `LocalSettings.php` file inside the MediaWiki's container:
 
 ```yaml
 mediawiki_container_additional_volumes_auto:
@@ -170,6 +178,17 @@ To get started, open the URL with a web browser, and log in to the instance with
 For a command line interface, a third party client [MediaWiki-CLI](https://github.com/Zepmann/mediawiki-cli) is available.
 
 ## Maintenance
+
+### Updating configuration settings
+
+You can update configuration settings on `LocalSettings.php` to the ones specified on your `vars.yml` file by running the command below:
+
+```sh
+ansible-playbook -i inventory/hosts setup.yml --tags=adjust-config-mediawiki
+```
+
+>[!WARNING]
+> Running the command overwrites changes directly added to `LocalSettings.php` with default values on `defaults/main.yml`.
 
 ### Upgrading MediaWiki
 
