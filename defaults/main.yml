@@ -13,6 +13,10 @@ mediawiki_enabled: true
 mediawiki_identifier: mediawiki
 mediawiki_base_path: "/{{ mediawiki_identifier }}"
 mediawiki_data_path: "{{ mediawiki_base_path }}/data"
+mediawiki_config_path: "{{ mediawiki_data_path }}/config" # For mounted LocalSettings.php
+mediawiki_database_path: "{{ mediawiki_data_path }}/database" # For SQLite
+mediawiki_images_path: "{{ mediawiki_data_path }}/images"
+mediawiki_sites_path: "{{ mediawiki_data_path }}/sites"
 
 # renovate: datasource=docker depName=mediawiki
 mediawiki_version: lts

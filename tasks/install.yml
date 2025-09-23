@@ -14,6 +14,10 @@
   with_items:
     - "{{ mediawiki_base_path }}"
     - "{{ mediawiki_data_path }}"
+    - "{{ mediawiki_config_path }}"
+    - "{{ mediawiki_database_path }}"
+    - "{{ mediawiki_images_path }}"
+    - "{{ mediawiki_sites_path }}"
 
 - name: Ensure MediaWiki support files installed
   ansible.builtin.template:
