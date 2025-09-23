@@ -169,6 +169,20 @@ To get started, open the URL with a web browser, and log in to the instance with
 
 For a command line interface, a third party client [MediaWiki-CLI](https://github.com/Zepmann/mediawiki-cli) is available.
 
+## Maintenance
+
+### Upgrading MediaWiki
+
+**Before upgrading MediaWiki, make sure to have a look at [the release note](https://www.mediawiki.org/wiki/Release_notes) and [compatibility tables](https://www.mediawiki.org/wiki/Compatibility)**, as sometimes the latest dependencies are not supported. For example, MariaDB 12.0.0+ is not supported by MediaWiki 1.44 due to [this bug](https://phabricator.wikimedia.org/T401570).
+
+After confirming that dependencies are fulfilled on your side, you can run the playbook tag as below to upgrade it by running the maintenance script ([`run.php update`](https://www.mediawiki.org/wiki/Manual:Update.php)):
+
+```sh
+ansible-playbook -i inventory/hosts setup.yml --tags=update-mediawiki
+```
+
+It should be noted that MediaWiki supports upgrades from up to two LTS releases ago (see [this section](https://www.mediawiki.org/wiki/Upgrading#Check_requirements) on the manual). Upgrading from older versions has to be performed step by step, by editing the `mediawiki_version` variable manually.
+
 ## Troubleshooting
 
 ### Check the service's logs

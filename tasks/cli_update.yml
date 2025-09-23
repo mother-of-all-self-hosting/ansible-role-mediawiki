@@ -1,0 +1,27 @@
+# SPDX-FileCopyrightText: 2023 Slavi Pantaleev
+# SPDX-FileCopyrightText: 2025 Suguru Hirahara
+#
+# SPDX-License-Identifier: AGPL-3.0-or-later
+
+---
+# The command for invoking 'run.php update': `ansible-playbook -i inventory/hosts setup.yml --tags=update-mediawiki`
+
+- name: Ensure MediaWiki service is started
+  ansible.builtin.service:
+    name: "{{ mediawiki_identifier }}"
+    state: started
+    daemon_reload: true
+  register: mediawiki_start
+
+- name: Wait a while, so that MediaWiki can manage to start
+  ansible.builtin.pause:
+    seconds: 7
+  when: mediawiki_start.changed | bool
+
+- name: Run 'run.php update' for MediaWiki
+  # See https://www.mediawiki.org/wiki/Manual:Upgrading
+  ansible.builtin.command: >
+    docker exec --user={{ mediawiki_uid }}:{{ mediawiki_gid }} {{ mediawiki_identifier }} \
+    php maintenance/run.php update
+  register: mediawiki_update_result
+  changed_when: mediawiki_update_result.rc == 0
