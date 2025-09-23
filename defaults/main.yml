@@ -210,16 +210,54 @@ mediawiki_database_sqlite_path: /var/www/data
 mediawiki_database_name: mediawiki
 mediawiki_config_dbgroupdefault: ""
 
+# Control if email authentication (confirmation) for this wiki is enabled
+# See: https://www.mediawiki.org/wiki/Manual:$wgEmailAuthentication
+mediawiki_config_email_authentication: false
+
+# Specify an email address that the wiki can contact if something goes wrong
+# See: https://www.mediawiki.org/wiki/Manual:$wgEmergencyContact
+mediawiki_config_emergency_contact: ""
+
+# Control if the basic email features such as password reminder is enabled
+# Note: using an external mail provider requires `$wgSMTP` settings to be configured
+# See: https://www.mediawiki.org/wiki/Manual:$wgEnableEmail
+mediawiki_config_enable_email: false
+
+# Control if images and other files are allowed to be uploaded through the wiki
+# See: https://www.mediawiki.org/wiki/Manual:$wgEnableUploads
+mediawiki_config_enable_uploads: false
+
+# Specify the site language code
 # See: https://www.mediawiki.org/wiki/Manual:$wgLanguageCode
 mediawiki_config_lang: en
+
+# Specify the timezone for the wiki
+# See: https://www.mediawiki.org/wiki/Manual:$wgLocaltimezone
+mediawiki_config_localtimezone: UTC
+
+# Specify wiki's logos
+# See: https://www.mediawiki.org/wiki/Manual:$wgLogos
+mediawiki_config_logos_1x: "$wgResourceBasePath/resources/assets/change-your-logo.svg"
+mediawiki_config_logos_icon: "$wgResourceBasePath/resources/assets/change-your-logo-icon.svg"
 
 # See: https://www.mediawiki.org/wiki/Manual:$wgMemoryLimit
 # Only used when installing MediaWiki
 mediawiki_config_memory_limit: default
 
+# Specify the password reminder email address
+# See: https://www.mediawiki.org/wiki/Manual:$wgPasswordSender
+mediawiki_config_password_sender: ""
+
 # Specify profiler output format
 # Only used when installing MediaWiki
 mediawiki_config_profiler: text
+
+# Specify to override for copyright metadata
+# See: https://www.mediawiki.org/wiki/Manual:Configuration_settings#Copyright
+mediawiki_config_rights_icon: ""
+mediawiki_config_rights_page: ""
+mediawiki_config_rights_text: ""
+mediawiki_config_rights_url: ""
 
 # Specify the relative path of the wiki in the web server
 # See: https://www.mediawiki.org/wiki/Manual:$wgScriptPath

@@ -105,6 +105,40 @@ Set `postgres` to use Postgres and `sqlite` to use SQLite, respectively. The SQL
 
 For other settings, check variables such as `mediawiki_database_*` on [`defaults/main.yml`](../defaults/main.yml).
 
+### Set wiki's logos (recommended)
+
+Though this is not requirement, the placeholder icons should be replaced with yours by adding the following configuration to your `vars.yml` file:
+
+```yaml
+mediawiki_config_logos_1x: 1X_LOGO_PATH_HERE
+mediawiki_config_logos_icon: ICON_LOGO_PATH_HERE
+```
+
+Both file path and URL can be set to logo paths. See [this page](https://www.mediawiki.org/wiki/Manual:$wgLogos) on the manual about configuration for logos as well.
+
+#### Loading external icon files
+
+You might find [this role (ansible-role-aux)](https://github.com/mother-of-all-self-hosting/ansible-role-aux), maintained by MASH team, helpful for loading logo files to the container.
+
+For example, you can upload ones (here: `1x.png` and `icon.png` inside the local `/home/example/` directory) to `{{ mediawiki_config_path }}` and use them as logos by adding the following configuration to your `vars.yml` file:
+
+```yaml
+aux_file_definitions_custom:
+  - src: "/home/example/1x.png"
+    dest: "{{ mediawiki_config_path }}/1x.png"
+    mode: "0640"
+    owner: "{{ mediawiki_uid }}"
+    group: "{{ mediawiki_gid }}"
+  - src: "/home/example/icon.png"
+    dest: "{{ mediawiki_config_path }}/icon.png"
+    mode: "0640"
+    owner: "{{ mediawiki_uid }}"
+    group: "{{ mediawiki_gid }}"
+
+mediawiki_config_logos_1x: "$wgResourceBasePath/config/1x.png"
+mediawiki_config_logos_icon: "$wgResourceBasePath/config/icon.png"
+```
+
 ### Extending the configuration
 
 There are some additional things you may wish to configure about the component.

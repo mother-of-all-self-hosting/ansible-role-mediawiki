@@ -9,7 +9,19 @@
     regexp: "{{ item.regexp }}"
     replace: "{{ item.replace }}"
   with_items:
+    - { regexp: 'wgEmailAuthentication = (.*?);', replace: 'wgEmailAuthentication = {{ mediawiki_config_email_authentication | to_json }};' }
+    - { regexp: 'wgEmergencyContact = "(.*?)";', replace: 'wgEmergencyContact = "{{ mediawiki_config_emergency_contact }}";' }
+    - { regexp: 'wgEnableEmail = (.*?);', replace: 'wgEnableEmail = {{ mediawiki_config_enable_email | to_json }};' }
+    - { regexp: 'wgEnableUploads = (.*?);', replace: 'wgEnableUploads = {{ mediawiki_config_enable_uploads | to_json }};' }
     - { regexp: 'wgLanguageCode = "(.*?)";', replace: 'wgLanguageCode = "{{ mediawiki_config_lang }}";' }
+    - { regexp: 'wgLocaltimezone = "(.*?)";', replace: 'wgLocaltimezone = "{{ mediawiki_config_localtimezone }}";' }
+    - { regexp: "'1x' => \"(.*?)\",", replace: "'1x' => \"{{ mediawiki_config_logos_1x }}\"," }
+    - { regexp: "'icon' => \"(.*?)\",", replace: "'icon' => \"{{ mediawiki_config_logos_icon }}\"," }
+    - { regexp: 'wgPasswordSender = "(.*?)";', replace: 'wgPasswordSender = "{{ mediawiki_config_password_sender }}";' }
+    - { regexp: 'wgRightsIcon = "(.*?)";', replace: 'wgRightsIcon = "{{ mediawiki_config_rights_icon }}";' }
+    - { regexp: 'wgRightsPage = "(.*?)";', replace: 'wgRightsPage = "{{ mediawiki_config_rights_page }}";' }
+    - { regexp: 'wgRightsText = "(.*?)";', replace: 'wgRightsText = "{{ mediawiki_config_rights_text }}";' }
+    - { regexp: 'wgRightsUrl = "(.*?)";', replace: 'wgRightsUrl = "{{ mediawiki_config_rights_url }}";' }
     - { regexp: 'wgScriptPath = "(.*?)";', replace: 'wgScriptPath = "{{ mediawiki_config_scriptpath }}";' }
     - { regexp: 'wgServer = "(.*?)";', replace: 'wgServer = "{{ mediawiki_scheme }}://{{ mediawiki_hostname }}";' }
     - { regexp: 'wgSitename = "(.*?)";', replace: 'wgSitename = "{{ mediawiki_config_sitename }}";' }
