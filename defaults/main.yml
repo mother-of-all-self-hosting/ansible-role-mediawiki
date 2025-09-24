@@ -277,5 +277,9 @@ mediawiki_config_with_extensions: ""
 # See: https://www.mediawiki.org/wiki/Manual:$wgSitename
 mediawiki_config_sitename: ""
 
+# Additional configuration settings
+# See: https://www.mediawiki.org/wiki/Manual:Configuration_settings
+mediawiki_config_additional_configurations: ""
+
 # Additional environment variables.
 mediawiki_environment_variables_additional_variables: ''

@@ -145,9 +145,22 @@ There are some additional things you may wish to configure about the component.
 
 Take a look at:
 
-- [`defaults/main.yml`](../defaults/main.yml) for some variables that you can customize via your `vars.yml` file. You can override settings (even those that don't have dedicated playbook variables) using the `mediawiki_environment_variables_additional_variables` variable
+- [`defaults/main.yml`](../defaults/main.yml) for some variables that you can customize via your `vars.yml` file
 
-See [the official documentation](https://github.com/mediawiki/mediawiki/blob/main/mediawiki_config.docker_template.toml) for a complete list of MediaWiki's config options that you could put in `mediawiki_environment_variables_additional_variables`.
+As the configuration settings specified on that file are basic despite being sufficient for starting up the instance, you would probably want to add other standard settings listed on [this section](https://www.mediawiki.org/wiki/Manual:LocalSettings.php#Standard_settings) on the manual to `mediawiki_config_additional_configurations`.
+
+For example, you can configure permissions to disable user registration (see [this section](https://www.mediawiki.org/wiki/Manual:Preventing_access#Restrict_account_creation) on the manual about restricting account creation) by adding the following configuration to your `vars.yml` file:
+
+```yaml
+mediawiki_config_additional_configurations: |
+  $wgGroupPermissions['*']['createaccount'] = false;
+```
+
+See [the official documentation](https://www.mediawiki.org/wiki/Manual:Configuration_settings) for a complete list of MediaWiki's config options that you could put in `mediawiki_config_additional_configurations`.
+
+#### Enabling email features
+
+**By default email features are disabled.** To use features which requires sending emails (such as notification), it is necessary to configure email provider by setting [`$wgSMTP`](https://www.mediawiki.org/wiki/Manual:$wgSMTP) as well as setting `mediawiki_config_enable_email` to `true`.
 
 ## Installing
 

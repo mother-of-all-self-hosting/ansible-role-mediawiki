@@ -26,6 +26,12 @@
     - { regexp: 'wgServer = "(.*?)";', replace: 'wgServer = "{{ mediawiki_scheme }}://{{ mediawiki_hostname }}";' }
     - { regexp: 'wgSitename = "(.*?)";', replace: 'wgSitename = "{{ mediawiki_config_sitename }}";' }
 
+- name: Ensure the mediawiki_config_additional_configurations is added to LocalSettings.php / updated
+  ansible.builtin.blockinfile:
+    path: "{{ mediawiki_config_path }}/LocalSettings.php"
+    block: |
+      {{ mediawiki_config_additional_configurations }}
+
 - name: Notify users to restart the MediaWiki service
   ansible.builtin.set_fact:
     devture_playbook_runtime_messages_list: |
