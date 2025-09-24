@@ -50,13 +50,29 @@
     {% endif %}
 
     --dbtype={{ mediawiki_database_type }} \
-    --dbserver={{ mediawiki_database_hostname }}:{{ mediawiki_database_port }} \
-    --dbuser={{ mediawiki_database_username }} \
-    --dbpass={{ mediawiki_database_password }} \
+
+    {% if mediawiki_database_type == 'mysql' %}
+    --dbserver={{ mediawiki_database_mysql_hostname }}:{{ mediawiki_database_mysql_port }} \
+    --dbuser={{ mediawiki_database_mysql_username }} \
+    --dbpass={{ mediawiki_database_mysql_password }} \
     --dbname={{ mediawiki_database_name }} \
 
-    {% if mediawiki_database_prefix != '' %}
-    --dbprefix={{ mediawiki_database_prefix }} \
+    {% if mediawiki_database_mysql_prefix != '' %}
+    --dbprefix={{ mediawiki_database_mysql_prefix }} \
+    {% endif %}
+    {% endif %}
+
+    {% if mediawiki_database_type == 'postgres' %}
+    --dbserver={{ mediawiki_database_postgres_hostname }} \
+    --dbport={{ mediawiki_database_postgres_port }} \
+    --dbuser={{ mediawiki_database_postgres_username }} \
+    --dbpass={{ mediawiki_database_postgres_password }} \
+    --dbschema={{ mediawiki_database_postgres_schema }} \
+    --dbname={{ mediawiki_database_name }} \
+    {% endif %}
+
+    {% if mediawiki_database_type == 'sqlite' %}
+    --dbpath={{ mediawiki_database_sqlite_path }} \
     {% endif %}
 
     --lang={{ mediawiki_config_lang }} \

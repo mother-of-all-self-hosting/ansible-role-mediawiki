@@ -17,9 +17,32 @@
     - mediawiki_hostname
     - mediawiki_path_prefix
     - mediawiki_container_network
-    - mediawiki_database_hostname
-    - mediawiki_database_password
+    - mediawiki_database_type
     - mediawiki_config_sitename
+
+- name: Fail if MediaWiki database type is invalid
+  ansible.builtin.fail:
+    msg: >-
+      mediawiki_database_type must be 'mysql', 'postgres' or 'sqlite'
+  when: "mediawiki_database_type not in ['mysql', 'postgres', 'sqlite']"
+
+- name: Fail if required MediaWiki + MySQL integration settings not defined
+  ansible.builtin.fail:
+    msg: >-
+      You need to define a required configuration setting (`{{ item }}`) when `mediawiki_database_type` is `mysql`
+  when: "mediawiki_database_type == 'mysql' and lookup('vars', item, default='') | string | length == 0"
+  with_items:
+    - mediawiki_database_mysql_hostname
+    - mediawiki_database_mysql_password
+
+- name: Fail if required MediaWiki + Postgres integration settings not defined
+  ansible.builtin.fail:
+    msg: >-
+      You need to define a required configuration setting (`{{ item }}`) when `mediawiki_database_type` is `postgres`
+  when: "mediawiki_database_type == 'postgres' and lookup('vars', item, default='') | string | length == 0"
+  with_items:
+    - mediawiki_database_postgres_hostname
+    - mediawiki_database_postgres_password
 
 - name: Run if Traefik is enabled
   when: mediawiki_container_labels_traefik_enabled | bool

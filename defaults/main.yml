@@ -184,6 +184,10 @@ mediawiki_systemd_wanted_services_list_default: []
 mediawiki_systemd_wanted_services_list_auto: []
 mediawiki_systemd_wanted_services_list_custom: []
 
+# Specify database to use
+# Valid values: mysql, postgres, sqlite
+mediawiki_database_type: ""
+
 # Specify database configuration
 # See:
 # - https://www.mediawiki.org/wiki/Manual:$wgDBserver
@@ -191,11 +195,18 @@ mediawiki_systemd_wanted_services_list_custom: []
 # - https://www.mediawiki.org/wiki/Manual:$wgDBuser
 # - https://www.mediawiki.org/wiki/Manual:$wgDBpassword
 # - https://www.mediawiki.org/wiki/Manual:$wgDBprefix
-mediawiki_database_hostname: ""
-mediawiki_database_port: 3306
-mediawiki_database_username: mediawiki
-mediawiki_database_password: ""
-mediawiki_database_prefix: ""
+# - https://www.mediawiki.org/wiki/Manual:$wgDBmwschema
+mediawiki_database_mysql_hostname: ""
+mediawiki_database_mysql_port: 3306
+mediawiki_database_mysql_username: mediawiki
+mediawiki_database_mysql_password: ""
+mediawiki_database_mysql_prefix: ""
+mediawiki_database_postgres_hostname: ""
+mediawiki_database_postgres_port: 5432
+mediawiki_database_postgres_username: mediawiki
+mediawiki_database_postgres_password: ""
+mediawiki_database_postgres_schema: mediawiki
+mediawiki_database_sqlite_path: /var/www/data
 mediawiki_database_name: mediawiki
 mediawiki_config_dbgroupdefault: ""
 

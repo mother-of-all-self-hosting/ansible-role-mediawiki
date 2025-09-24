@@ -29,9 +29,12 @@ See the project's [documentation](https://github.com/mediawiki/mediawiki/blob/ma
 
 ## Prerequisites
 
-To run a MediaWiki instance it is necessary to prepare a database. You can use a [SQLite](https://www.sqlite.org/), [Postgres](https://www.postgresql.org/), or [MySQL](https://www.mysql.com/) compatible database server. By default it is configured to use SQLite.
+To run a MediaWiki instance it is necessary to prepare a database.  You can use a [MySQL](https://www.mysql.com/) compatible database server, [Postgres](https://www.postgresql.org/), or [SQLite](https://www.sqlite.org/). The SQLite database file will be automatically created by the service if it is enabled.
 
-If you are looking for Ansible roles for a Postgres or MySQL compatible server, you can check out [ansible-role-postgres](https://github.com/mother-of-all-self-hosting/ansible-role-postgres) and [ansible-role-mariadb](https://github.com/mother-of-all-self-hosting/ansible-role-mariadb), both of which are maintained by the [Mother-of-All-Self-Hosting (MASH)](https://github.com/mother-of-all-self-hosting) team.
+If you are looking for Ansible roles for a MySQL compatible server or Postgres, you can check out [ansible-role-mariadb](https://github.com/mother-of-all-self-hosting/ansible-role-mariadb) and [ansible-role-postgres](https://github.com/mother-of-all-self-hosting/ansible-role-postgres), both of which are maintained by the [Mother-of-All-Self-Hosting (MASH)](https://github.com/mother-of-all-self-hosting) team.
+
+>[!NOTE]
+> It is [not recommended](https://www.mediawiki.org/wiki/Compatibility#Database) to use Postgres, as [this page](https://www.mediawiki.org/wiki/Postgres) on the manual describes that the Postgres support is "second-class" and you may run into some bugs.
 
 ## Adjusting the playbook configuration
 
@@ -87,6 +90,20 @@ You also need to specify wiki's name by adding the following configuration to yo
 ```yaml
 mediawiki_config_sitename: YOUR_WIKI_NAME_HERE
 ```
+
+### Specify database
+
+It is necessary to select database used by MediaWiki from a MySQL compatible database, Postgres, and SQLite.
+
+To use a MySQL compatible database, add the following configuration to your `vars.yml` file:
+
+```yaml
+mediawiki_database_type: mysql
+```
+
+Set `postgres` to use Postgres and `sqlite` to use SQLite, respectively. The SQLite database is stored in the directory specified with `mediawiki_database_path`.
+
+For other settings, check variables such as `mediawiki_database_*` on [`defaults/main.yml`](../defaults/main.yml).
 
 ### Extending the configuration
 
