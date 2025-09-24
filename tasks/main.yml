@@ -17,6 +17,14 @@
     - name: Install MediaWiki
       ansible.builtin.include_tasks: "{{ role_path }}/tasks/install.yml"
 
+- name: Perform tasks to install Mediawiki with CLI
+  when: mediawiki_enabled | bool
+  tags:
+    - install-cli-mediawiki
+  block:
+    - name: Run a CLI-based maintenance script for installing and configuring MediaWiki
+      ansible.builtin.include_tasks: "{{ role_path }}/tasks/cli_install.yml"
+
 - name: Perform MediaWiki uninstallation tasks
   when: not mediawiki_enabled | bool
   tags:

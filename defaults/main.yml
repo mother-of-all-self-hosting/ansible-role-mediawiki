@@ -185,11 +185,48 @@ mediawiki_systemd_wanted_services_list_auto: []
 mediawiki_systemd_wanted_services_list_custom: []
 
 # Specify database configuration
-mediawiki_database_hostname: ''
+# See:
+# - https://www.mediawiki.org/wiki/Manual:$wgDBserver
+# - https://www.mediawiki.org/wiki/Manual:$wgDBport
+# - https://www.mediawiki.org/wiki/Manual:$wgDBuser
+# - https://www.mediawiki.org/wiki/Manual:$wgDBpassword
+# - https://www.mediawiki.org/wiki/Manual:$wgDBprefix
+mediawiki_database_hostname: ""
 mediawiki_database_port: 3306
 mediawiki_database_username: mediawiki
-mediawiki_database_password: ''
+mediawiki_database_password: ""
+mediawiki_database_prefix: ""
 mediawiki_database_name: mediawiki
+mediawiki_config_dbgroupdefault: ""
+
+# See: https://www.mediawiki.org/wiki/Manual:$wgLanguageCode
+mediawiki_config_lang: en
+
+# See: https://www.mediawiki.org/wiki/Manual:$wgMemoryLimit
+# Only used when installing MediaWiki
+mediawiki_config_memory_limit: default
+
+# Specify profiler output format
+# Only used when installing MediaWiki
+mediawiki_config_profiler: text
+
+# Specify the relative path of the wiki in the web server
+# See: https://www.mediawiki.org/wiki/Manual:$wgScriptPath
+mediawiki_config_scriptpath: ""
+
+# Comma-separated list of skins to install
+# Only used when installing MediaWiki
+mediawiki_config_skins: ""
+
+# Specify the wiki ID
+# See: https://www.mediawiki.org/wiki/Manual:Wiki_ID
+# Only used when installing MediaWiki
+mediawiki_config_wiki: ""
+mediawiki_config_with_extensions: ""
+
+# Specify the wiki's name
+# See: https://www.mediawiki.org/wiki/Manual:$wgSitename
+mediawiki_config_sitename: ""
 
 # Additional environment variables.
 mediawiki_environment_variables_additional_variables: ''

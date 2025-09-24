@@ -19,6 +19,7 @@
     - mediawiki_container_network
     - mediawiki_database_hostname
     - mediawiki_database_password
+    - mediawiki_config_sitename
 
 - name: Run if Traefik is enabled
   when: mediawiki_container_labels_traefik_enabled | bool

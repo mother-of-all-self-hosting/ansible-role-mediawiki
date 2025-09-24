@@ -1,0 +1,101 @@
+# SPDX-FileCopyrightText: 2023 Slavi Pantaleev
+# SPDX-FileCopyrightText: 2025 Suguru Hirahara
+#
+# SPDX-License-Identifier: AGPL-3.0-or-later
+
+---
+# The command for invoking 'run.php install': `ansible-playbook -i inventory/hosts setup.yml --tags=install-cli-mediawiki -e admin_username=ADMIN_USERNAME_HERE -e admin_password=ADMIN_PASSWORD_HERE`
+
+- name: Fail if playbook called incorrectly
+  ansible.builtin.fail:
+    msg: "The `admin_username` and  `admin_password` variables need to be provided via --extra-vars"
+  when: "admin_username is not defined or admin_password is not defined"
+
+- name: Check existence of LocalSettings.php, a file for configuration settings of MediaWiki installation
+  ansible.builtin.stat:
+    path: "{{ mediawiki_config_path }}/LocalSettings.php"
+  register: mediawiki_config_file_stat
+
+- name: Fail if LocalSettings.php exists
+  when: mediawiki_config_file_stat.stat.exists | bool
+  ansible.builtin.fail:
+    msg: "A LocalSettings.php file has been detected. To upgrade this installation, use the `update-mediawiki` tag instead."
+
+- name: Ensure MediaWiki service is started
+  ansible.builtin.service:
+    name: "{{ mediawiki_identifier }}"
+    state: started
+    daemon_reload: true
+  register: mediawiki_start
+
+- name: Wait a while, so that MediaWiki can manage to start
+  ansible.builtin.pause:
+    seconds: 7
+  when: mediawiki_start.changed | bool
+
+- name: Run 'run.php install' for installing MediaWiki
+  # See https://www.mediawiki.org/wiki/Manual:Install.php for the latest information
+  #
+  # This command installs MediaWiki, outputting LocalSettings.php to the confpath, so that the file
+  # can be mounted after installing it. Note the file itself must be placed in /var/www/html; otherwise
+  # the Mediawiki instance simply refuses to work.
+  ansible.builtin.shell: >
+    docker exec --user={{ mediawiki_uid }}:{{ mediawiki_gid }} {{ mediawiki_identifier }} \
+    php maintenance/run.php install \
+
+    --confpath=/var/www/html/config \
+
+    {% if mediawiki_config_dbgroupdefault != '' %}
+    --dbgroupdefault={{ mediawiki_config_dbgroupdefault }} \
+    {% endif %}
+
+    --dbtype={{ mediawiki_database_type }} \
+    --dbserver={{ mediawiki_database_hostname }}:{{ mediawiki_database_port }} \
+    --dbuser={{ mediawiki_database_username }} \
+    --dbpass={{ mediawiki_database_password }} \
+    --dbname={{ mediawiki_database_name }} \
+
+    {% if mediawiki_database_prefix != '' %}
+    --dbprefix={{ mediawiki_database_prefix }} \
+    {% endif %}
+
+    --lang={{ mediawiki_config_lang }} \
+    --memory-limit={{ mediawiki_config_memory_limit }} \
+    --pass={{ admin_password }} \
+    --profiler={{ mediawiki_config_profiler }} \
+    --server={{ mediawiki_scheme }}://{{ mediawiki_hostname }} \
+    --scriptpath={{ mediawiki_config_scriptpath }} \
+
+    {% if mediawiki_config_skins != '' %}
+    --skins={{ mediawiki_config_skins }} \
+    {% endif %}
+
+    {% if mediawiki_config_wiki != '' %}
+    --wiki={{ mediawiki_config_wiki }} \
+    {% endif %}
+
+    {% if mediawiki_config_with_extensions != '' %}
+    --with-extensions={{ mediawiki_config_with_extensions }} \
+    {% endif %}
+
+    "{{ mediawiki_config_sitename }}" "{{ admin_username }}"
+  register: mediawiki_install_result
+  changed_when: mediawiki_install_result.rc == 0
+  no_log: true # hide raw password
+
+- name: Ensure the mediawiki_config_additional_configurations variable is added to LocalSettings.php / updated
+  ansible.builtin.blockinfile:
+    path: "{{ mediawiki_config_path }}/LocalSettings.php"
+    block: |
+      {{ mediawiki_config_additional_configurations }}
+
+- name: Notify if LocalSettings.php is not mounted to the container
+  ansible.builtin.set_fact:
+    devture_playbook_runtime_messages_list: |
+      {{
+        devture_playbook_runtime_messages_list | default([])
+        +
+        [
+          "You can now mount LocalSettings.php and restart the service to complete installation. NOTE: removing your LocalSettings.php which exists inside `" + mediawiki_config_path + "` stops your MediaWiki instance from working!"
+        ]
+      }}

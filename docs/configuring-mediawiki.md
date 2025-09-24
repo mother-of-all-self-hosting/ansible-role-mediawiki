@@ -80,6 +80,14 @@ After adjusting the hostname, make sure to adjust your DNS records to point the 
 
 **Note**: hosting MediaWiki under a subpath (by configuring the `mediawiki_path_prefix` variable) does not seem to be possible due to MediaWiki's technical limitations.
 
+### Set wiki's name
+
+You also need to specify wiki's name by adding the following configuration to your `vars.yml` file:
+
+```yaml
+mediawiki_config_sitename: YOUR_WIKI_NAME_HERE
+```
+
 ### Extending the configuration
 
 There are some additional things you may wish to configure about the component.
@@ -92,6 +100,14 @@ See [the official documentation](https://github.com/mediawiki/mediawiki/blob/mai
 
 ## Installing
 
+Because installing a MediaWiki instance requires to invoke [`run.php install`](https://www.mediawiki.org/wiki/Manual:Install.php), installation process consists of multiple steps as follows:
+
+### (Unmount LocalSettings.php)
+
+If your `vars.yml` file is configured to mount `LocalSettings.php` file from the previous installation, make sure not to mount it yet — Otherwise the installation command below will fail.
+
+### Installing the service
+
 After configuring the playbook, run the installation command of your playbook as below:
 
 ```sh
@@ -99,6 +115,34 @@ ansible-playbook -i inventory/hosts setup.yml --tags=setup-all,start
 ```
 
 If you use the MASH playbook, the shortcut commands with the [`just` program](https://github.com/mother-of-all-self-hosting/mash-playbook/blob/main/docs/just.md) are also available: `just install-all` or `just setup-all`
+
+### Installing and configuring MediaWiki
+
+After completing it, run the command below to conduct installation and configuration of MediaWiki by invoking `run.php install`:
+
+```sh
+ansible-playbook -i inventory/hosts setup.yml --tags=install-cli-mediawiki -e admin_username=ADMIN_USERNAME_HERE -e admin_password=ADMIN_PASSWORD_HERE
+```
+
+>[!NOTE]
+> Make sure to take a note of the username and password as they are not stored as a plain text.
+
+### Loading LocalSettings.php
+
+After running the command, add the following configuration to your `vars.yml` file and restart the service to mount `LocalSettings.php` file inside the MediaWiki's container:
+
+```yaml
+mediawiki_container_additional_volumes_auto:
+  - type: "bind"
+    src: "{{ mediawiki_config_path }}/LocalSettings.php"
+    dst: "/var/www/html/LocalSettings.php"
+    options: "readonly"
+```
+
+As it is fine to set any path to the source as long as it points the generated LocalSettings.php file, the destination path should not be changed.
+
+>[!WARNING]
+> Once it is loaded, removing the mount stops your MediaWiki instance from working.
 
 ## Usage
 
