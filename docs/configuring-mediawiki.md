@@ -144,6 +144,16 @@ mediawiki_config_logos_1x: "$wgResourceBasePath/config/1x.png"
 mediawiki_config_logos_icon: "$wgResourceBasePath/config/icon.png"
 ```
 
+### Changing default wiki's language
+
+To change the default language, add the following configuration to your `vars.yml` file:
+
+```yaml
+mediawiki_config_lang: LANGUAGE_CODE_HERE
+```
+
+See [this page](https://www.mediawiki.org/wiki/Manual:$wgLanguageCode) on the manual for details.
+
 ### Extending the configuration
 
 There are some additional things you may wish to configure about the component.
