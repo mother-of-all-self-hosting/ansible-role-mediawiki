@@ -21,11 +21,14 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 
 # Setting up MediaWiki
 
-This is an [Ansible](https://www.ansible.com/) role which installs [MediaWiki](https://github.com/mediawiki/mediawiki/) to run as a [Docker](https://www.docker.com/) container wrapped in a systemd service.
+This is an [Ansible](https://www.ansible.com/) role which installs [MediaWiki](https://www.mediawiki.org) to run as a [Docker](https://www.docker.com/) container wrapped in a systemd service.
 
-MediaWiki is a lightweight authentication server that provides an opinionated, simplified LDAP interface for authentication.
+MediaWiki is a popular free and open-source wiki software.
 
-See the project's [documentation](https://github.com/mediawiki/mediawiki/blob/main/README.md) to learn what MediaWiki does and why it might be useful to you.
+See the project's [documentation](https://www.mediawiki.org/wiki/MediaWiki) to learn what MediaWiki does and why it might be useful to you.
+
+>[!NOTE]
+> While [the Docker's official image](https://hub.docker.com/_/mediawiki) is used by this role, it is *not* the official image by MediaWiki. See [this page](https://www.mediawiki.org/wiki/Docker/Docker_Hub) for more details.
 
 ## Prerequisites
 
