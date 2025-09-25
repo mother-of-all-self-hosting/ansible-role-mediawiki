@@ -233,11 +233,9 @@ As it is fine to set any path to the source as long as it points the generated L
 
 ## Usage
 
-After running the command for installation, MediaWiki becomes available at the specified hostname like `https://example.com`.
+After mounting LocalSettings.php and restarting the service, MediaWiki becomes available at the specified hostname like `https://example.com`.
 
-To get started, open the URL with a web browser, and log in to the instance with the administrator account. You can create additional users (admin-privileged or not) after that via the web frontend. See [this section](https://github.com/mediawiki/mediawiki/blob/main/README.md#usage) on the documentation for details about usage, including a recommended architecture.
-
-For a command line interface, a third party client [MediaWiki-CLI](https://github.com/Zepmann/mediawiki-cli) is available.
+To get started, open the URL with a web browser, and log in to the instance with the administrator account.
 
 ## Maintenance
 
