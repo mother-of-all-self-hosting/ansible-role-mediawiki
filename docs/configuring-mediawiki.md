@@ -34,6 +34,8 @@ See the project's [documentation](https://www.mediawiki.org/wiki/MediaWiki) to l
 
 To run a MediaWiki instance it is necessary to prepare a database.  You can use a [MySQL](https://www.mysql.com/) compatible database server, [Postgres](https://www.postgresql.org/), or [SQLite](https://www.sqlite.org/). The SQLite database file will be automatically created by the service if it is enabled.
 
+When selecting a database, check [this compatibility table](https://www.mediawiki.org/wiki/Compatibility#Database) and make sure that its version is compatible with that of MediaWiki.
+
 If you are looking for Ansible roles for a MySQL compatible server or Postgres, you can check out [ansible-role-mariadb](https://github.com/mother-of-all-self-hosting/ansible-role-mariadb) and [ansible-role-postgres](https://github.com/mother-of-all-self-hosting/ansible-role-postgres), both of which are maintained by the [Mother-of-All-Self-Hosting (MASH)](https://github.com/mother-of-all-self-hosting) team.
 
 >[!NOTE]
