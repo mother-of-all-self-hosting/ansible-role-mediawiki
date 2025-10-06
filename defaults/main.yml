@@ -15,7 +15,7 @@ mediawiki_base_path: "/{{ mediawiki_identifier }}"
 mediawiki_data_path: "{{ mediawiki_base_path }}/data"
 
 # renovate: datasource=docker depName=mediawiki
-mediawiki_version: 1.44.0
+mediawiki_version: lts
 
 mediawiki_uid: ''
 mediawiki_gid: ''

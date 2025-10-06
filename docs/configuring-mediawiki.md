@@ -55,6 +55,19 @@ mediawiki_enabled: true
 ########################################################################
 ```
 
+### Select a version tag (optional)
+
+Due to the nature of a wiki as a common knowledge base, this role is configured to track `lts` tag of the Docker image. If you wish to use a newer version, free to specify it by adding the following configuration to your `vars.yml` file:
+
+```yaml
+mediawiki_version: VERSION_TAG_HERE
+```
+
+The supported tags can be found at [this page](https://hub.docker.com/_/mediawiki#supported-tags-and-respective-dockerfile-links).
+
+>[!NOTE]
+> MariaDB 12.0.0+ is not supported by MediaWiki 1.44 due to [this bug](https://phabricator.wikimedia.org/T401570).
+
 ### Set the hostname
 
 To enable MediaWiki you need to set the hostname as well. To do so, add the following configuration to your `vars.yml` file. Make sure to replace `example.com` with your own value.
