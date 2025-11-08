@@ -21,13 +21,13 @@ mediawiki_sites_path: "{{ mediawiki_data_path }}/sites"
 # renovate: datasource=docker depName=mediawiki
 mediawiki_version: lts
 
-mediawiki_uid: ''
-mediawiki_gid: ''
+mediawiki_uid: ""
+mediawiki_gid: ""
 
 mediawiki_scheme: https
 
 # The hostname at which MediaWiki is served.
-mediawiki_hostname: ''
+mediawiki_hostname: ""
 
 # The path at which MediaWiki is exposed.
 # This value must either be `/` or not end with a slash (e.g. `/mediawiki`).
@@ -54,7 +54,7 @@ mediawiki_container_image_self_build_repo_dockerfile_dir_base: apache
 # Controls whether the container exposes its HTTP port (tcp/80 in the container).
 #
 # Takes an "<ip>:<port>" or "<port>" value (e.g. "127.0.0.1:2586"), or empty string to not expose.
-mediawiki_container_http_host_bind_port: ''
+mediawiki_container_http_host_bind_port: ""
 
 # The base container network. It will be auto-created by this role if it doesn't exist already.
 mediawiki_container_network: "{{ mediawiki_identifier }}"
@@ -120,7 +120,7 @@ mediawiki_container_labels_traefik_additional_response_headers_custom: {}
 # mediawiki_container_labels_additional_labels: |
 #   my.label=1
 #   another.label="here"
-mediawiki_container_labels_additional_labels: ''
+mediawiki_container_labels_additional_labels: ""
 
 # A list of extra arguments to pass to the container (`docker run` command)
 mediawiki_container_extra_arguments: []
@@ -282,4 +282,4 @@ mediawiki_config_sitename: ""
 mediawiki_config_additional_configurations: ""
 
 # Additional environment variables.
-mediawiki_environment_variables_additional_variables: ''
+mediawiki_environment_variables_additional_variables: ""
