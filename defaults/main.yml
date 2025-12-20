@@ -281,5 +281,8 @@ mediawiki_config_sitename: ""
 # See: https://www.mediawiki.org/wiki/Manual:Configuration_settings
 mediawiki_config_additional_configurations: ""
 
+# Specify the timezone
+mediawiki_environment_variables_tz: UTC
+
 # Additional environment variables.
 mediawiki_environment_variables_additional_variables: ""
