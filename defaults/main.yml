@@ -29,7 +29,7 @@ mediawiki_scheme: https
 # The hostname at which MediaWiki is served.
 mediawiki_hostname: ""
 
-# The path at which MediaWiki is exposed.
+# The path at which MediaWiki is served.
 # This value must either be `/` or not end with a slash (e.g. `/mediawiki`).
 #
 # Hosting MediaWiki under a subpath does not seem to be possible due to MediaWiki's
