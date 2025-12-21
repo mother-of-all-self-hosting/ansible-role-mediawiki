@@ -125,7 +125,7 @@ mediawiki_container_labels_additional_labels: "{{ mediawiki_container_labels_add
 mediawiki_container_labels_additional_labels_auto: {}
 mediawiki_container_labels_additional_labels_custom: {}
 
-# A list of extra arguments to pass to the container (`docker run` command)
+# A list of extra arguments to pass to the container (`docker create` command)
 mediawiki_container_extra_arguments: "{{ mediawiki_container_extra_arguments_auto + mediawiki_container_extra_arguments_custom }}"
 mediawiki_container_extra_arguments_auto: []
 mediawiki_container_extra_arguments_custom: []
