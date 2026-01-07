@@ -56,4 +56,6 @@ traefik.http.routers.{{ mediawiki_identifier }}.tls.certResolver={{ mediawiki_co
 traefik.http.services.{{ mediawiki_identifier }}.loadbalancer.server.port={{ mediawiki_container_http_port }}
 {% endif %}
 
-{{ mediawiki_container_labels_additional_labels }}
+{% for arg in mediawiki_container_labels_additional_labels %}
+{{ arg }}
+{% endfor %}
