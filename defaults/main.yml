@@ -118,7 +118,7 @@ mediawiki_container_labels_traefik_additional_response_headers_custom: {}
 # To add your own custom labels, use `mediawiki_container_labels_additional_labels_custom`
 #
 # Example:
-# mediawiki_container_labels_additional_labels_custom: |
+# mediawiki_container_labels_additional_labels_custom:
 #   - my.label=1
 #   - another.label="here"
 mediawiki_container_labels_additional_labels: "{{ mediawiki_container_labels_additional_labels_auto + mediawiki_container_labels_additional_labels_custom }}"
