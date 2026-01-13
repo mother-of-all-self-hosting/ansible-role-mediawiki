@@ -81,7 +81,7 @@ mediawiki_container_additional_volumes_custom: []
 # mediawiki_container_labels_traefik_enabled controls whether labels to assist a Traefik reverse-proxy will be attached to the container.
 # See `../templates/labels.j2` for details.
 #
-# To inject your own other container labels, see `mediawiki_container_labels_additional_labels`.
+# To inject your own other container labels, see `mediawiki_container_labels_additional_labels_custom`.
 mediawiki_container_labels_traefik_enabled: true
 mediawiki_container_labels_traefik_docker_network: "{{ mediawiki_container_network }}"
 mediawiki_container_labels_traefik_hostname: "{{ mediawiki_hostname }}"
