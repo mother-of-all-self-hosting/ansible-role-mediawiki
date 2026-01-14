@@ -24,6 +24,7 @@ mediawiki_version: lts
 mediawiki_uid: ""
 mediawiki_gid: ""
 
+# The scheme used for serving MediaWiki.
 mediawiki_scheme: https
 
 # The hostname at which MediaWiki is served.
