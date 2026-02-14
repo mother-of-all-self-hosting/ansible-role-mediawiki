@@ -78,6 +78,7 @@
           path: "{{ mediawiki_container_image_self_build_repo_dockerfile_dir }}"
           pull: true
           args:
+      register: mediawiki_container_image_build_result
 
 - name: Ensure MediaWiki container network is created via community.docker.docker_network
   when: devture_systemd_docker_base_container_network_creation_method == 'ansible-module'
@@ -113,4 +114,5 @@
         mediawiki_support_files_result.changed | default(false)
         or mediawiki_systemd_service_result.changed | default(false)
         or mediawiki_container_image_pull_result.changed | default(false)
+        or mediawiki_container_image_build_result.changed | default(false)
       }}
