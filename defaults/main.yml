@@ -224,7 +224,7 @@ mediawiki_container_cleanup_command: |
   echo "Failed to remove stale container {{ mediawiki_identifier }} after {{ mediawiki_container_cleanup_timeout_seconds }} attempts" >&2;
   exit 1
 
-# Specify database to use
+# Specify a database driver to use
 # Valid values: mysql, postgres, sqlite
 mediawiki_database_type: ""
 
