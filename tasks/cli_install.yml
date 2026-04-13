@@ -9,7 +9,9 @@
 - name: Fail if playbook called incorrectly
   ansible.builtin.fail:
     msg: "The `admin_username` and  `admin_password` variables need to be provided via --extra-vars"
-  when: "admin_username is not defined or admin_password is not defined"
+  when: >-
+    admin_username is not defined or admin_username == 'ADMIN_USERNAME_HERE' or
+    admin_password is not defined or admin_password == 'ADMIN_PASSWORD_HERE'
 
 - name: Check existence of LocalSettings.php, a file for configuration settings of MediaWiki installation
   ansible.builtin.stat:
@@ -105,7 +107,7 @@
     block: |
       {{ mediawiki_config_additional_configurations }}
 
-- name: Notify if LocalSettings.php is not mounted to the container
+- name: Inject the message about unmounted LocalSettings.php
   ansible.builtin.set_fact:
     devture_playbook_runtime_messages_list: |
       {{
