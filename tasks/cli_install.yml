@@ -6,7 +6,7 @@
 ---
 # The command for invoking 'run.php install': `ansible-playbook -i inventory/hosts setup.yml --tags=install-cli-mediawiki -e admin_username=ADMIN_USERNAME_HERE -e admin_password=ADMIN_PASSWORD_HERE`
 
-- name: Fail if playbook called incorrectly
+- name: Fail if playbook called incorrectly for MediaWiki
   ansible.builtin.fail:
     msg: "The `admin_username` and  `admin_password` variables need to be provided via --extra-vars"
   when: >-
