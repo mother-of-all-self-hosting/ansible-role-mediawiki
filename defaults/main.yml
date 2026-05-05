@@ -42,7 +42,6 @@ mediawiki_container_image_tag: "{{ mediawiki_version }}"
 mediawiki_container_image_registry_prefix: "{{ mediawiki_container_image_registry_prefix_upstream }}"
 mediawiki_container_image_registry_prefix_upstream: "{{ mediawiki_container_image_registry_prefix_upstream_default }}"
 mediawiki_container_image_registry_prefix_upstream_default: docker.io/
-mediawiki_container_image_force_pull: "{{ mediawiki_container_image.endswith(':latest') }}"
 
 mediawiki_container_image_self_build: false
 mediawiki_container_image_self_build_name: "wikimedia/mediawiki-docker:{{ mediawiki_container_image_self_build_repo_version }}"
