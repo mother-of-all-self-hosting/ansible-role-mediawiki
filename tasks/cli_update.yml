@@ -1,5 +1,5 @@
 # SPDX-FileCopyrightText: 2023 Slavi Pantaleev
-# SPDX-FileCopyrightText: 2025 Suguru Hirahara
+# SPDX-FileCopyrightText: 2025, 2026 Suguru Hirahara
 #
 # SPDX-License-Identifier: AGPL-3.0-or-later
 
@@ -20,8 +20,10 @@
 
 - name: Run 'run.php update' for MediaWiki
   # See https://www.mediawiki.org/wiki/Manual:Upgrading
-  ansible.builtin.command: >
-    docker exec --user={{ mediawiki_uid }}:{{ mediawiki_gid }} {{ mediawiki_identifier }} \
-    php maintenance/run.php update
+  ansible.builtin.command:
+    cmd: |-
+      {{ devture_systemd_docker_base_host_command_docker }} exec
+      --user={{ mediawiki_uid }}:{{ mediawiki_gid }} {{ mediawiki_identifier }}
+      php maintenance/run.php update
   register: mediawiki_update_result
   changed_when: mediawiki_update_result.rc == 0
