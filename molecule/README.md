@@ -49,6 +49,10 @@ Currently these testing scenarios are available:
 
 Tests a standard MediaWiki installation.
 
+### `mariadb`
+
+Tests a standard MediaWiki installation with the MariaDB database.
+
 ### `postgres`
 
 Tests a standard MediaWiki installation with the Postgres database.
