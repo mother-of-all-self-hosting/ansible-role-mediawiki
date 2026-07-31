@@ -21,6 +21,7 @@
   when: mediawiki_enabled | bool
   tags:
     - adjust-config-mediawiki
+    - molecule-notest
   block:
     - name: Update MediaWiki configurations on LocalSettings.php
       ansible.builtin.include_tasks: "{{ role_path }}/tasks/adjust_config.yml"
@@ -29,6 +30,7 @@
   when: mediawiki_enabled | bool
   tags:
     - install-cli-mediawiki
+    - molecule-notest
   block:
     - name: Run a CLI-based maintenance script for installing and configuring MediaWiki
       ansible.builtin.include_tasks: "{{ role_path }}/tasks/cli_install.yml"
@@ -37,6 +39,7 @@
   when: mediawiki_enabled | bool
   tags:
     - update-mediawiki
+    - molecule-notest
   block:
     - name: Run a CLI-based maintenance script for updating MediaWiki
       ansible.builtin.include_tasks: "{{ role_path }}/tasks/cli_update.yml"
