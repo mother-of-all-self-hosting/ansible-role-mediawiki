@@ -32,7 +32,7 @@ See the project's [documentation](https://www.mediawiki.org/wiki/MediaWiki) to l
 
 ## Prerequisites
 
-To run a MediaWiki instance it is necessary to prepare a database.  You can use a [MySQL](https://www.mysql.com/) compatible database server, [Postgres](https://www.postgresql.org/), or [SQLite](https://www.sqlite.org/). The SQLite database file will be automatically created by the service if it is enabled.
+To run a MediaWiki instance it is necessary to prepare a database. You can use a [MySQL](https://www.mysql.com/) compatible database server, [Postgres](https://www.postgresql.org/), or [SQLite](https://www.sqlite.org/). The SQLite database file will be automatically created by the service if it is enabled.
 
 When selecting a database, check [this compatibility table](https://www.mediawiki.org/wiki/Compatibility#Database) and make sure that its version is compatible with that of MediaWiki.
 
