@@ -38,8 +38,8 @@ provisioner:
         mediawiki_hostname: localhost
         mediawiki_container_labels_traefik_enabled: false
         mediawiki_container_http_host_bind_port: 80
-        mediawiki_database_type: sqlite
         mediawiki_config_sitename: mediawiki
+        mediawiki_database_type: sqlite
   env:
     # Workaround for https://github.com/ansible/molecule/issues/4391
     ANSIBLE_ROLES_PATH: ${MOLECULE_PROJECT_DIRECTORY}/..:/.ansible/roles:/usr/share/ansible/roles:/etc/ansible/roles:~/.ansible/roles

@@ -38,10 +38,10 @@ provisioner:
         mediawiki_hostname: localhost
         mediawiki_container_labels_traefik_enabled: false
         mediawiki_container_http_host_bind_port: 80
-        mediawiki_database_type: mysql
         mediawiki_config_sitename: mediawiki
 
         # Variables required for MediaWiki to connect to the MariaDB database
+        mediawiki_database_type: mysql
         mediawiki_database_mysql_hostname: "{{ mariadb_connection_hostname }}"
         mediawiki_database_mysql_port: "{{ mariadb_connection_port }}"
         mediawiki_database_mysql_username: my_database_username
