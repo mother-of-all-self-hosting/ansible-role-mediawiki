@@ -1,5 +1,11 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "description": [
+    "Patch releases of MediaWiki are deliberately not automerged here, unlike in most other roles in this fleet.",
+    "This role never migrates the database. Applying a new image is one playbook run; running MediaWiki's own `maintenance/run.php update` is a separate, explicitly invoked one (`--tags=update-mediawiki`). An automerged bump therefore reaches a wiki whose schema is still the old one, and MediaWiki's upgrade manual asks for update.php after any upgrade, point releases included.",
+    "A wiki in that state does not fail visibly: started on 1.46.0 with a database installed by 1.43.9, it answers, reports itself as `MediaWiki 1.46.0` through api.php, and renders its existing pages, while every edit fails with `internal_api_error_DBQueryError`. That is a read-only wiki which looks entirely healthy.",
+    "The Molecule run that would gate the automerge does not cover this. It installs the bumped version from scratch and exercises it, which says nothing about the in-place upgrade of an existing wiki - the only path an automerged bump ever takes on a user's host. Automerging on that evidence would drop the human review without CI having tested what the review is for."
+  ],
   "extends": [
     "github>mother-of-all-self-hosting/renovate-config#v1.0.0"
   ]
