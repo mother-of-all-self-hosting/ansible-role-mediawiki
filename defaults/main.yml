@@ -18,8 +18,24 @@ mediawiki_database_path: "{{ mediawiki_data_path }}/database" # For SQLite
 mediawiki_images_path: "{{ mediawiki_data_path }}/images"
 mediawiki_sites_path: "{{ mediawiki_data_path }}/sites"
 
+# A concrete version, deliberately not a moving tag such as `lts` or `stable`.
+#
+# A moving tag turns every `docker pull` into a potential MediaWiki upgrade, and
+# this role does not run `maintenance/run.php update` on its own (that is the
+# `update-mediawiki` tag). A wiki whose code has moved ahead of its database
+# schema keeps answering requests and even reports the new version, while every
+# edit fails with a database error - breakage which is both silent and hard to
+# attribute. Renovate cannot bump a moving tag either: `lts` is not a version,
+# so there is nothing to compare against, and the annotation below sat inert
+# for as long as this variable said `lts`.
+#
+# The value tracks MediaWiki's LTS line, which is what a wiki as a long-lived
+# knowledge base wants. Renovate proposes releases from the newer lines too;
+# those are upgrades to take deliberately, after reading the release notes, with
+# `--tags=update-mediawiki` to follow.
+#
 # renovate: datasource=docker depName=mediawiki
-mediawiki_version: lts
+mediawiki_version: 1.43.9
 
 mediawiki_uid: ""
 mediawiki_gid: ""
