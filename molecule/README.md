@@ -47,15 +47,13 @@ Currently these testing scenarios are available:
 
 ### `default`
 
-Tests a standard MediaWiki installation.
+Tests a standard MediaWiki installation, backed by SQLite.
 
 ### `mariadb`
 
 Tests a standard MediaWiki installation with the MariaDB database.
 
-### `postgres`
-
-Tests a standard MediaWiki installation with the Postgres database.
+There is deliberately no Postgres scenario: the official MediaWiki container image ships no `pgsql` PHP extension, so `run.php install --dbtype=postgres` cannot connect to a Postgres server at all. See [the documentation](../docs/configuring-mediawiki.md#prerequisites).
 
 ## Running
 

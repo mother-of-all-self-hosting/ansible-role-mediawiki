@@ -20,7 +20,6 @@ jobs:
         scenario:
           - default
           - mariadb
-          - postgres
       fail-fast: false
 
     env:

@@ -38,8 +38,11 @@ When selecting a database, check [this compatibility table](https://www.mediawik
 
 If you are looking for Ansible roles for a MySQL compatible server or Postgres, you can check out [ansible-role-mariadb](https://github.com/mother-of-all-self-hosting/ansible-role-mariadb) and [ansible-role-postgres](https://github.com/mother-of-all-self-hosting/ansible-role-postgres), both of which are maintained by the [Mother-of-All-Self-Hosting (MASH)](https://github.com/mother-of-all-self-hosting) team.
 
+>[!WARNING]
+> Postgres cannot be used with the container image this role installs. The official MediaWiki image ships PHP without the `pgsql` extension (`php -m` lists `mysqli`, `pdo_sqlite` and `sqlite3`, and no Postgres driver, in every variant: `apache`, `fpm` and `fpm-alpine`), so `run.php install --dbtype=postgres` stops with *"Postgres functions missing, have you compiled PHP with the --with-pgsql option?"*. Setting `mediawiki_database_type: postgres` therefore only works with a custom image which adds that extension, via `mediawiki_container_image` or `mediawiki_container_image_self_build`.
+
 >[!NOTE]
-> It is [not recommended](https://www.mediawiki.org/wiki/Compatibility#Database) to use Postgres, as [this page](https://www.mediawiki.org/wiki/Postgres) on the manual describes that the Postgres support is "second-class" and you may run into some bugs.
+> Even where it can be used, Postgres is [not recommended](https://www.mediawiki.org/wiki/Compatibility#Database): [this page](https://www.mediawiki.org/wiki/Postgres) on the manual describes the Postgres support as "second-class" and warns that you may run into some bugs.
 
 ## Adjusting the playbook configuration
 
@@ -110,6 +113,9 @@ mediawiki_database_type: mysql
 ```
 
 Set `postgres` to use Postgres and `sqlite` to use SQLite, respectively. The SQLite database is stored in the directory specified with `mediawiki_database_path`.
+
+>[!WARNING]
+> `postgres` requires a container image with the `pgsql` PHP extension, which the official MediaWiki image does not have. See [Prerequisites](#prerequisites) above.
 
 For other settings, check variables such as `mediawiki_database_*` on [`defaults/main.yml`](../defaults/main.yml).
 

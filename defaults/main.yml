@@ -244,6 +244,15 @@ mediawiki_container_cleanup_command: |
 
 # Specify a database driver to use
 # Valid values: mysql, postgres, sqlite
+#
+# `postgres` needs a container image which has the `pgsql` PHP extension, and
+# the official MediaWiki image does not have one - `php -m` lists `mysqli`,
+# `pdo_sqlite` and `sqlite3` and no Postgres driver, in the `apache`, `fpm` and
+# `fpm-alpine` variants alike. With the stock image, `run.php install` stops
+# with "Postgres functions missing, have you compiled PHP with the --with-pgsql
+# option?". Point `mediawiki_container_image` at an image which carries the
+# extension (or build one with `mediawiki_container_image_self_build`) before
+# choosing `postgres` here.
 mediawiki_database_type: ""
 
 # Specify database configuration
