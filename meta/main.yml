@@ -3,7 +3,7 @@ galaxy_info:
   author: Suguru Hirahara
   company: progressiv
   role_name: mediawiki
-  namespace: progressiv
+  namespace: mash
   description: MediaWiki
   platforms:
     - name: Debian
