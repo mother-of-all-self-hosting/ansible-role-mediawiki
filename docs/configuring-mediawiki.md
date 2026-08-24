@@ -228,7 +228,7 @@ ansible-playbook -i inventory/hosts setup.yml --tags=adjust-config-mediawiki
 Finally, add the following configuration to your `vars.yml` file and restart the service to mount `LocalSettings.php` file inside the MediaWiki's container:
 
 ```yaml
-mediawiki_container_additional_volumes_auto:
+mediawiki_container_additional_volumes_custom:
   - type: "bind"
     src: "{{ mediawiki_config_path }}/LocalSettings.php"
     dst: "/var/www/html/LocalSettings.php"
@@ -279,8 +279,12 @@ You can find the logs in [systemd-journald](https://www.freedesktop.org/software
 
 #### Increase logging verbosity
 
-If you want to increase the verbosity, add the following configuration to your `vars.yml` file:
+MediaWiki's [debug settings](https://www.mediawiki.org/wiki/Manual:How_to_debug) live in `LocalSettings.php`, so add them to your `vars.yml` file like this:
 
 ```yaml
-mediawiki_environment_variables_mediawiki_verbose: true
+mediawiki_config_additional_configurations: |
+  $wgShowExceptionDetails = true;
+  $wgDebugLogFile = "/var/www/data/debug.log";
 ```
+
+Then apply them with `ansible-playbook -i inventory/hosts setup.yml --tags=adjust-config-mediawiki` and restart the service. The log file above is written to the directory the role mounts from `mediawiki_database_path` on the host.
