@@ -35,7 +35,7 @@ mediawiki_sites_path: "{{ mediawiki_data_path }}/sites"
 # `--tags=update-mediawiki` to follow.
 #
 # renovate: datasource=docker depName=mediawiki
-mediawiki_version: 1.43.9
+mediawiki_version: 1.46.0
 
 mediawiki_uid: ""
 mediawiki_gid: ""
