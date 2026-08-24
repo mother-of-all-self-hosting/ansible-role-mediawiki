@@ -40,8 +40,7 @@ If you are looking for Ansible roles for a MySQL compatible server or Postgres, 
 
 >[!WARNING]
 > Postgres cannot be used with the container image this role installs. The official MediaWiki image ships PHP without the `pgsql` extension (`php -m` lists `mysqli`, `pdo_sqlite` and `sqlite3`, and no Postgres driver, in every variant: `apache`, `fpm` and `fpm-alpine`), so `run.php install --dbtype=postgres` stops with *"Postgres functions missing, have you compiled PHP with the --with-pgsql option?"*. Setting `mediawiki_database_type: postgres` therefore only works with a custom image which adds that extension, via `mediawiki_container_image` or `mediawiki_container_image_self_build`.
-
->[!NOTE]
+>
 > Even where it can be used, Postgres is [not recommended](https://www.mediawiki.org/wiki/Compatibility#Database): [this page](https://www.mediawiki.org/wiki/Postgres) on the manual describes the Postgres support as "second-class" and warns that you may run into some bugs.
 
 ## Adjusting the playbook configuration
@@ -78,8 +77,7 @@ The supported tags can be found at [this page](https://hub.docker.com/_/mediawik
 
 >[!WARNING]
 > Set a concrete version here (e.g. `1.43.9`), not a moving tag such as `lts` or `stable`. A moving tag makes every image pull a potential MediaWiki upgrade, and this role does not migrate the database on its own. A wiki running newer code against an unmigrated database keeps serving pages and even reports the new version, while every edit fails with a database error. Upgrade deliberately instead: raise `mediawiki_version`, then run the [upgrade command](#upgrading-mediawiki).
-
->[!NOTE]
+>
 > MariaDB 12.0.0+ is not supported by MediaWiki 1.44 due to [this bug](https://phabricator.wikimedia.org/T401570).
 
 ### Set the hostname
