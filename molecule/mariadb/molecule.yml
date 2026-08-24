@@ -52,11 +52,53 @@ provisioner:
             (['mariadb.service'])
           }}
 
+        # The wiki this scenario installs and then logs into over its API.
+        # `admin_username` and `admin_password` are the names the role's
+        # `install-cli-mediawiki` tasks expect: an operator passes them with
+        # --extra-vars, this scenario passes them through the inventory.
+        admin_username: molecule-admin
+        admin_password: molecule-verification-pass
+
+        # MediaWiki capitalizes the first letter of every account name, so this
+        # is what the wiki calls the account above.
+        mediawiki_molecule_admin_wiki_username: Molecule-admin
+
+        # `mediawiki_hostname` is what the wiki was installed as, so requests go
+        # to the same name rather than to 127.0.0.1.
+        mediawiki_molecule_url: http://localhost
+
+        mediawiki_molecule_page_title: Molecule Verification Page
+        mediawiki_molecule_page_text: molecule-marker-mariadb-3b7e40
+
+        # The role's own `mediawiki_database_path`, spelled out because role
+        # defaults are not in scope in a verify play. The side effect play
+        # asserts that the two still agree. Nothing should ever appear in it in
+        # this scenario - a SQLite file here would mean the wiki is not on
+        # MariaDB at all.
+        mediawiki_molecule_database_path: /mediawiki/data/database
+
+        # MariaDB's own client, run inside the container the MariaDB role
+        # started, which is how the side effect and verify plays read the
+        # database without going through MediaWiki. `--batch
+        # --skip-column-names` makes it print one bare value per line, which is
+        # what the assertions match against.
+        #
+        # The MariaDB role also installs a `cli-non-interactive` helper, which
+        # would be the natural thing to use, but the version pinned in
+        # requirements.yml renders it without `docker run -i`: it reads no
+        # standard input at all and answers every query with nothing, silently.
+        mediawiki_molecule_mariadb_query: >-
+          docker exec mariadb
+          mariadb --user=root --password={{ mariadb_root_password }}
+          --database={{ mediawiki_database_name }} --batch --skip-column-names --execute
+
         # Variables for MariaDB
         mariadb_uid: 1000
         mariadb_gid: 1000
         mariadb_root_password: mariadb_password
         mariadb_container_network: "{{ mediawiki_container_network }}"
+        # The database the CLI helper above connects to.
+        mariadb_db_name: "{{ mediawiki_database_name }}"
         mariadb_managed_databases: |
           {{
             [{

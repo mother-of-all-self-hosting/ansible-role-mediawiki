@@ -40,6 +40,34 @@ provisioner:
         mediawiki_container_http_host_bind_port: 80
         mediawiki_config_sitename: mediawiki
         mediawiki_database_type: sqlite
+
+        # The wiki this scenario installs and then logs into over its API.
+        # `admin_username` and `admin_password` are the names the role's
+        # `install-cli-mediawiki` tasks expect: an operator passes them with
+        # --extra-vars, this scenario passes them through the inventory.
+        admin_username: molecule-admin
+        admin_password: molecule-verification-pass
+
+        # MediaWiki capitalizes the first letter of every account name, so this
+        # is what the wiki calls the account above.
+        mediawiki_molecule_admin_wiki_username: Molecule-admin
+
+        # `mediawiki_hostname` is what the wiki was installed as, so requests go
+        # to the same name rather than to 127.0.0.1.
+        mediawiki_molecule_url: http://localhost
+
+        mediawiki_molecule_page_title: Molecule Verification Page
+        mediawiki_molecule_page_text: molecule-marker-default-8f2c1d
+
+        # The role's own `mediawiki_database_path`, spelled out because role
+        # defaults are not in scope in a verify play. The side effect play
+        # asserts that the two still agree.
+        mediawiki_molecule_database_path: /mediawiki/data/database
+
+        # The role passes `mediawiki_database_name` to `run.php install` only
+        # for MySQL and Postgres, so the SQLite database file carries
+        # install.php's own default name instead.
+        mediawiki_molecule_sqlite_database_file: my_wiki.sqlite
   env:
     # Workaround for https://github.com/ansible/molecule/issues/4391
     ANSIBLE_ROLES_PATH: ${MOLECULE_PROJECT_DIRECTORY}/..:/.ansible/roles:/usr/share/ansible/roles:/etc/ansible/roles:~/.ansible/roles

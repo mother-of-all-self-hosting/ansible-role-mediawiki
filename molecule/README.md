@@ -55,6 +55,16 @@ Tests a standard MediaWiki installation with the MariaDB database.
 
 There is deliberately no Postgres scenario: the official MediaWiki container image ships no `pgsql` PHP extension, so `run.php install --dbtype=postgres` cannot connect to a Postgres server at all. See [the documentation](../docs/configuring-mediawiki.md#prerequisites).
 
+## What the scenarios check
+
+MediaWiki without a `LocalSettings.php` answers HTTP 200 on every route — `api.php` included — with a setup page which even names its version, so a running container proves nothing on its own. Each scenario therefore:
+
+1. converges the role, which leaves an uninstalled wiki behind (installing from `converge.yml` would break the idempotence check)
+2. records, in `side_effect.yml`, what that uninstalled wiki answers and what its database holds, and then installs the wiki through the role's own `install-cli-mediawiki` tasks and mounts the resulting `LocalSettings.php` the way the documentation prescribes
+3. asserts, in `verify.yml`, that the wiki reports the pinned version and the configured settings through `api.php`, that the administrator account the installer created can log in and create a page through the API, that the page reads back attributed to that account, and that the page is in the database this scenario configured — read with that database's own client, from outside MediaWiki
+
+Because the installation happens in the side effect step, `molecule verify` on its own (without a preceding `molecule side-effect`) has nothing to verify.
+
 ## Running
 
 By default it is configured to run the scenarios on Ubuntu 26.04.

@@ -1,0 +1,141 @@
+# SPDX-FileCopyrightText: 2026 Slavi Pantaleev
+# SPDX-FileCopyrightText: 2026 spatterlight
+# SPDX-FileCopyrightText: 2026 Suguru Hirahara
+#
+# SPDX-License-Identifier: AGPL-3.0-or-later
+
+---
+- name: Install MediaWiki the way an operator does
+  hosts: all
+  become: true
+  gather_facts: true
+
+  tasks:
+    # ------------------------------------------------------------------
+    # The negative control: what a MediaWiki nobody has installed answers
+    # ------------------------------------------------------------------
+
+    # Converge deliberately stops short of installing the wiki, because
+    # installation is a one-time operation which would break idempotence.
+    # What converge leaves behind is a MediaWiki without a LocalSettings.php,
+    # and that state is misleading in the worst way: it answers 200 on every
+    # route, api.php included, with a setup page which even names the version.
+    # "The service is active" and "an HTTP request succeeded" are therefore
+    # worth nothing here. This play records what that state can produce before
+    # anything is installed, so that the verify step can insist on evidence
+    # which this state cannot fake.
+    - name: Retrieve what an uninstalled MediaWiki serves at its root (up to 10m)
+      ansible.builtin.uri:
+        url: "{{ mediawiki_molecule_url }}/"
+        return_content: true
+        status_code: [200]
+      register: mediawiki_root_before
+      until: mediawiki_root_before.status == 200
+      retries: 120
+      delay: 5
+
+    - name: Ask an uninstalled MediaWiki for its site info
+      ansible.builtin.uri:
+        url: "{{ mediawiki_molecule_url }}/api.php?action=query&meta=siteinfo&format=json"
+        return_content: true
+        status_code: [200]
+      register: mediawiki_siteinfo_before
+
+    # The same roles converge includes, in the same order, which is what brings
+    # their variables into this play (`public: true`). The paths checked below
+    # are then the role's own, rather than a copy of them kept in step by hand.
+    # Re-running the role installs nothing: the wiki's own installation is the
+    # `install-cli-mediawiki` step further down.
+    - name: Include the roles MediaWiki's installer depends on
+      ansible.builtin.include_role:
+        name: "{{ role_name }}"
+        public: true
+      loop:
+        - com.devture.ansible.role.playbook_help
+        - com.devture.ansible.role.systemd_docker_base
+        - "{{ lookup('env', 'MOLECULE_PROJECT_DIRECTORY') | basename }}"
+      loop_control:
+        loop_var: role_name
+
+    - name: Check whether MediaWiki has a configuration file before installation
+      ansible.builtin.stat:
+        path: "{{ mediawiki_config_path }}/LocalSettings.php"
+      register: mediawiki_config_file_before
+
+    - name: Look for a SQLite database before installation
+      ansible.builtin.find:
+        paths: "{{ mediawiki_database_path }}"
+        patterns: "*.sqlite"
+      register: mediawiki_sqlite_files_before
+
+    - name: Assert an uninstalled MediaWiki serves nothing but its setup page
+      ansible.builtin.assert:
+        that:
+          - mediawiki_database_path == mediawiki_molecule_database_path
+          - not mediawiki_config_file_before.stat.exists
+          - mediawiki_sqlite_files_before.files | length == 0
+          - "'LocalSettings.php not found' in mediawiki_root_before.content"
+          - "'LocalSettings.php not found' in mediawiki_siteinfo_before.content"
+          - mediawiki_siteinfo_before.json is not defined
+        fail_msg: >-
+          An uninstalled MediaWiki answered with something other than its setup page,
+          so the verify step could not tell an installed wiki from an uninstalled one.
+          Root: {{ mediawiki_root_before.content | default('') | truncate(200) }}
+        success_msg: >-
+          An uninstalled MediaWiki answers 200 at both / and api.php with
+          "LocalSettings.php not found" and no JSON whatsoever, and has neither a
+          configuration file nor a database - so whatever the verify step gets out
+          of api.php is the installation's doing
+
+    # ------------------------------------------------------------------
+    # The installation, through the role's own tasks
+    # ------------------------------------------------------------------
+
+    # `install-cli-mediawiki` is tagged `molecule-notest`, so converge skips it
+    # and it has to be reached by its task file. That is the point: it is the
+    # role's real installer, the same file an operator invokes with
+    # `--tags=install-cli-mediawiki`, not a Molecule-only imitation of it.
+    - name: Install MediaWiki with the role's maintenance script tasks
+      ansible.builtin.include_role:
+        name: "{{ lookup('env', 'MOLECULE_PROJECT_DIRECTORY') | basename }}"
+        tasks_from: cli_install.yml
+        public: true
+
+    - name: Check that the installer wrote a configuration file
+      ansible.builtin.stat:
+        path: "{{ mediawiki_config_path }}/LocalSettings.php"
+      register: mediawiki_config_file_after
+
+    - name: Assert the installer wrote a configuration file
+      ansible.builtin.assert:
+        that: mediawiki_config_file_after.stat.exists
+        fail_msg: >-
+          `run.php install` reported success but left no
+          {{ mediawiki_config_path }}/LocalSettings.php behind
+        success_msg: "The installer wrote {{ mediawiki_config_path }}/LocalSettings.php"
+
+    # ------------------------------------------------------------------
+    # Loading the configuration file, as the documentation prescribes
+    # ------------------------------------------------------------------
+
+    # The installer writes LocalSettings.php into the mounted config directory,
+    # which is not where MediaWiki looks for it. Mounting it into the document
+    # root is a separate documented step ("Loading LocalSettings.php"), and
+    # running the role again with that mount configured is how an operator
+    # performs it.
+    - name: Mount LocalSettings.php into MediaWiki's document root
+      ansible.builtin.include_role:
+        name: "{{ lookup('env', 'MOLECULE_PROJECT_DIRECTORY') | basename }}"
+        public: true
+      vars:
+        mediawiki_container_additional_volumes_custom:
+          - type: bind
+            src: "{{ mediawiki_config_path }}/LocalSettings.php"
+            dst: /var/www/html/LocalSettings.php
+            options: readonly
+
+    - name: Restart MediaWiki so that it reads its configuration file
+      ansible.builtin.systemd_service:
+        name: mediawiki.service
+        state: restarted
+        daemon_reload: true
