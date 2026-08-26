@@ -7,6 +7,6 @@
     "The Molecule run that would gate the automerge does not cover this. It installs the bumped version from scratch and exercises it, which says nothing about the in-place upgrade of an existing wiki - the only path an automerged bump ever takes on a user's host. Automerging on that evidence would drop the human review without CI having tested what the review is for."
   ],
   "extends": [
-    "github>mother-of-all-self-hosting/renovate-config#v1.0.0"
+    "github>mother-of-all-self-hosting/renovate-config#v1.1.0"
   ]
 }
