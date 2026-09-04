@@ -87,55 +87,6 @@
           configuration file nor a database - so whatever the verify step gets out
           of api.php is the installation's doing
 
-    # ------------------------------------------------------------------
-    # The installation, through the role's own tasks
-    # ------------------------------------------------------------------
-
-    # `install-cli-mediawiki` is tagged `molecule-notest`, so converge skips it
-    # and it has to be reached by its task file. That is the point: it is the
-    # role's real installer, the same file an operator invokes with
-    # `--tags=install-cli-mediawiki`, not a Molecule-only imitation of it.
-    - name: Install MediaWiki with the role's maintenance script tasks
-      ansible.builtin.include_role:
-        name: "{{ lookup('env', 'MOLECULE_PROJECT_DIRECTORY') | basename }}"
-        tasks_from: cli_install.yml
-        public: true
-
-    - name: Check that the installer wrote a configuration file
-      ansible.builtin.stat:
-        path: "{{ mediawiki_config_path }}/LocalSettings.php"
-      register: mediawiki_config_file_after
-
-    - name: Assert the installer wrote a configuration file
-      ansible.builtin.assert:
-        that: mediawiki_config_file_after.stat.exists
-        fail_msg: >-
-          `run.php install` reported success but left no
-          {{ mediawiki_config_path }}/LocalSettings.php behind
-        success_msg: "The installer wrote {{ mediawiki_config_path }}/LocalSettings.php"
-
-    # ------------------------------------------------------------------
-    # Loading the configuration file, as the documentation prescribes
-    # ------------------------------------------------------------------
-
-    # The installer writes LocalSettings.php into the mounted config directory,
-    # which is not where MediaWiki looks for it. Mounting it into the document
-    # root is a separate documented step ("Loading LocalSettings.php"), and
-    # running the role again with that mount configured is how an operator
-    # performs it.
-    - name: Mount LocalSettings.php into MediaWiki's document root
-      ansible.builtin.include_role:
-        name: "{{ lookup('env', 'MOLECULE_PROJECT_DIRECTORY') | basename }}"
-        public: true
-      vars:
-        mediawiki_container_additional_volumes_custom:
-          - type: bind
-            src: "{{ mediawiki_config_path }}/LocalSettings.php"
-            dst: /var/www/html/LocalSettings.php
-            options: readonly
-
-    - name: Restart MediaWiki so that it reads its configuration file
-      ansible.builtin.systemd_service:
-        name: mediawiki.service
-        state: restarted
-        daemon_reload: true
+    - name: Run the checks shared by all MediaWiki scenarios
+      ansible.builtin.include_tasks:
+        file: "{{ lookup('ansible.builtin.env', 'MOLECULE_PROJECT_DIRECTORY') }}/molecule/side_effect_tasks.yml"
