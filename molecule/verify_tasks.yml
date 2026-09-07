@@ -17,21 +17,27 @@
 # The unit is up
 # ------------------------------------------------------------------
 
-- name: Wait for the MediaWiki service to become active (up to 3m)
+- name: Wait for the MediaWiki systemd service to become active (up to 180s)
   ansible.builtin.systemd_service:
     name: mediawiki.service
   register: mediawiki_service
   until: mediawiki_service.status.ActiveState == 'active'
   retries: 36
   delay: 5
+  # So that giving up is reported by the assertion below rather than as a
+  # wall of systemd unit properties.
+  failed_when: false
 
-- name: Assert the MediaWiki service is active
+# `Restart=always` in the systemd unit means that even a container which crashes
+# and gets restarted reads as active here, so this is a precondition rather than
+# a result.
+- name: Assert the MediaWiki systemd service is active
   ansible.builtin.assert:
     that: mediawiki_service.status.ActiveState == 'active'
     fail_msg: "mediawiki.service is not active ({{ mediawiki_service.status.ActiveState }})"
     success_msg: "mediawiki.service is active"
 
-- name: Retrieve the MediaWiki service log for debugging
+- name: Retrieve the MediaWiki systemd service log for debugging
   when: mediawiki_debug_service_enabled | bool
   ansible.builtin.command:
     cmd: journalctl -xeu mediawiki.service
