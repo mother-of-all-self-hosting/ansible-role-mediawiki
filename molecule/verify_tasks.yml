@@ -40,7 +40,7 @@
 - name: Retrieve the MediaWiki systemd service log for debugging
   when: mediawiki_debug_service_enabled | bool
   ansible.builtin.command:
-    cmd: journalctl -xeu mediawiki.service
+    cmd: journalctl --no-pager --output=cat --unit=mediawiki.service
   changed_when: false
 
 # ------------------------------------------------------------------

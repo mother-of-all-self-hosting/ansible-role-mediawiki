@@ -23,18 +23,18 @@
 - name: Sample the MediaWiki restart counter again
   ansible.builtin.systemd_service:
     name: mediawiki.service
-  register: mediawiki_restarts_after
+  register: mediawiki_service_after
 
 - name: Assert MediaWiki did not restart while it was up
   ansible.builtin.assert:
     that:
-      - mediawiki_restarts_after.status.NRestarts == mediawiki_restarts_before.status.NRestarts
-      - mediawiki_restarts_after.status.ActiveState == 'active'
+      - mediawiki_service_after.status.NRestarts == mediawiki_restarts_before.status.NRestarts
+      - mediawiki_service_after.status.ActiveState == 'active'
     fail_msg: >-
       MediaWiki restarted while it was supposedly up
       ({{ mediawiki_restarts_before.status.NRestarts }} ->
-      {{ mediawiki_restarts_after.status.NRestarts }}), so `active` was
+      {{ mediawiki_service_after.status.NRestarts }}), so `active` was
       hiding a crash loop
     success_msg: >-
       MediaWiki did not restart over 45 seconds of watching
-      (restarts so far: {{ mediawiki_restarts_after.status.NRestarts }})
+      (restarts so far: {{ mediawiki_service_after.status.NRestarts }})
