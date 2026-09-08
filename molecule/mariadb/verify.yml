@@ -75,7 +75,7 @@
     - name: Show the MediaWiki verification summary
       ansible.builtin.debug:
         msg:
-          - "MediaWiki systemd: {{ mediawiki_service.status.ActiveState }}, restarts {{ mediawiki_restarts_after.status.NRestarts }}"
+          - "MediaWiki systemd: {{ mediawiki_service.status.ActiveState }}, {{ mediawiki_service_after.status.NRestarts }} restart(s)"
           - "MediaWiki uninstalled wiki: 200 with its setup page and no JSON (asserted in the side effect play)"
           - "MediaWiki siteinfo: {{ mediawiki_siteinfo.json.query.general.generator }}, sitename {{ mediawiki_siteinfo.json.query.general.sitename }}, dbtype {{ mediawiki_siteinfo.json.query.general.dbtype }} {{ mediawiki_siteinfo.json.query.general.dbversion | default('') }}"
           - "MediaWiki login: {{ mediawiki_login.json.clientlogin.status }} as {{ mediawiki_userinfo.json.query.userinfo.name }}"
