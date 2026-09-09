@@ -17,6 +17,8 @@
     mediawiki_verify_page_db_title: "{{ mediawiki_molecule_page_title | replace(' ', '_') }}"
 
   tasks:
+    - name: Verify that MediaWiki works
+      block:
     - name: Run the checks shared by all MediaWiki scenarios
       ansible.builtin.include_tasks:
         file: "{{ lookup('ansible.builtin.env', 'MOLECULE_PROJECT_DIRECTORY') }}/molecule/verify_tasks.yml"
@@ -76,3 +78,19 @@
           - "MediaWiki login: {{ mediawiki_login.json.clientlogin.status }} as {{ mediawiki_userinfo.json.query.userinfo.name }}"
           - "MediaWiki edit: {{ mediawiki_edit.json.edit.result }}, revision {{ mediawiki_edit.json.edit.newrevid }}, attributed to {{ mediawiki_revision.user }}"
           - "MediaWiki database: {{ mediawiki_molecule_sqlite_database_file }} holds {{ mediawiki_verify_page_db_title }}"
+
+      rescue:
+        # Whatever went wrong, the reason is almost always in the systemd service log.
+        - name: Retrieve the MediaWiki systemd service log
+          ansible.builtin.command:
+            cmd: journalctl --no-pager --output=cat --unit=mediawiki.service
+          register: mediawiki_service_log
+          changed_when: false
+
+        - name: Show the MediaWiki systemd service log
+          ansible.builtin.debug:
+            var: mediawiki_service_log.stdout_lines
+
+        - name: Fail because verification did not pass
+          ansible.builtin.fail:
+            msg: "MediaWiki verification failed. The systemd service log is printed above."
