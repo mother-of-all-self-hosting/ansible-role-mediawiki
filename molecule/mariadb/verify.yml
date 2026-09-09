@@ -19,70 +19,70 @@
   tasks:
     - name: Verify that MediaWiki works
       block:
-    - name: Run the checks shared by all MediaWiki scenarios
-      ansible.builtin.include_tasks:
-        file: "{{ lookup('ansible.builtin.env', 'MOLECULE_PROJECT_DIRECTORY') }}/molecule/verify_tasks.yml"
+        - name: Run the checks shared by all MediaWiki scenarios
+          ansible.builtin.include_tasks:
+            file: "{{ lookup('ansible.builtin.env', 'MOLECULE_PROJECT_DIRECTORY') }}/molecule/verify_tasks.yml"
 
-    # ------------------------------------------------------------------
-    # The page is in the database this scenario configured, not somewhere else
-    # ------------------------------------------------------------------
+        # ------------------------------------------------------------------
+        # The page is in the database this scenario configured, not somewhere else
+        # ------------------------------------------------------------------
 
-    # MediaWiki falls back to nothing: either it is talking to the MariaDB this
-    # scenario configured, or it is not working. A SQLite file appearing here
-    # would mean the wiki quietly installed itself somewhere else entirely.
-    - name: Look for a SQLite database MediaWiki must not have created
-      ansible.builtin.find:
-        paths: "{{ mediawiki_molecule_database_path }}"
-        patterns: "*.sqlite"
-      register: mediawiki_sqlite_files
+        # MediaWiki falls back to nothing: either it is talking to the MariaDB this
+        # scenario configured, or it is not working. A SQLite file appearing here
+        # would mean the wiki quietly installed itself somewhere else entirely.
+        - name: Look for a SQLite database MediaWiki must not have created
+          ansible.builtin.find:
+            paths: "{{ mediawiki_molecule_database_path }}"
+            patterns: "*.sqlite"
+          register: mediawiki_sqlite_files
 
-    # Read with MariaDB's own client inside the database container, entirely
-    # outside MediaWiki: what comes out is what the database server holds,
-    # rather than what the wiki says about itself. The same database answered
-    # `SHOW TABLES` with nothing at all before the installation.
-    - name: Read the wiki's own tables out of MariaDB
-      ansible.builtin.command:
-        cmd: >-
-          {{ mediawiki_molecule_mariadb_query }}
-          "SELECT page_title FROM page; SELECT user_name FROM user; SELECT old_text FROM text"
-      register: mediawiki_mariadb_query
-      changed_when: false
+        # Read with MariaDB's own client inside the database container, entirely
+        # outside MediaWiki: what comes out is what the database server holds,
+        # rather than what the wiki says about itself. The same database answered
+        # `SHOW TABLES` with nothing at all before the installation.
+        - name: Read the wiki's own tables out of MariaDB
+          ansible.builtin.command:
+            cmd: >-
+              {{ mediawiki_molecule_mariadb_query }}
+              "SELECT page_title FROM page; SELECT user_name FROM user; SELECT old_text FROM text"
+          register: mediawiki_mariadb_query
+          changed_when: false
 
-    - name: Assert the wiki lives in the MariaDB database this scenario configured
-      ansible.builtin.assert:
-        that:
-          - mediawiki_sqlite_files.files | length == 0
-          - mediawiki_verify_page_db_title in mediawiki_mariadb_query.stdout_lines
-          - mediawiki_molecule_admin_wiki_username in mediawiki_mariadb_query.stdout_lines
-          - mediawiki_molecule_page_text in mediawiki_mariadb_query.stdout_lines
-        fail_msg: >-
-          The MariaDB database does not hold the page, the user and the text
-          which were just written ({{ mediawiki_mariadb_query.stdout_lines }}),
-          or MediaWiki created a SQLite database instead
-          ({{ mediawiki_sqlite_files.files | map(attribute='path') | list }})
-        success_msg: >-
-          The MariaDB database this scenario configured holds the page
-          ({{ mediawiki_verify_page_db_title }}), the administrator account and
-          the page text, read with MariaDB's own client - and no SQLite database
-          was created
+        - name: Assert the wiki lives in the MariaDB database this scenario configured
+          ansible.builtin.assert:
+            that:
+              - mediawiki_sqlite_files.files | length == 0
+              - mediawiki_verify_page_db_title in mediawiki_mariadb_query.stdout_lines
+              - mediawiki_molecule_admin_wiki_username in mediawiki_mariadb_query.stdout_lines
+              - mediawiki_molecule_page_text in mediawiki_mariadb_query.stdout_lines
+            fail_msg: >-
+              The MariaDB database does not hold the page, the user and the text
+              which were just written ({{ mediawiki_mariadb_query.stdout_lines }}),
+              or MediaWiki created a SQLite database instead
+              ({{ mediawiki_sqlite_files.files | map(attribute='path') | list }})
+            success_msg: >-
+              The MariaDB database this scenario configured holds the page
+              ({{ mediawiki_verify_page_db_title }}), the administrator account and
+              the page text, read with MariaDB's own client - and no SQLite database
+              was created
 
-    # ------------------------------------------------------------------
-    # Nothing was quietly restarting while all of that was being checked
-    # ------------------------------------------------------------------
+        # ------------------------------------------------------------------
+        # Nothing was quietly restarting while all of that was being checked
+        # ------------------------------------------------------------------
 
-    - name: Run the checks shared by all MediaWiki scenarios (check restarts)
-      ansible.builtin.include_tasks:
-        file: "{{ lookup('ansible.builtin.env', 'MOLECULE_PROJECT_DIRECTORY') }}/molecule/verify_tasks_restarts.yml"
+        - name: Run the checks shared by all MediaWiki scenarios (check restarts)
+          ansible.builtin.include_tasks:
+            file: "{{ lookup('ansible.builtin.env', 'MOLECULE_PROJECT_DIRECTORY') }}/molecule/verify_tasks_restarts.yml"
 
-    - name: Show the MediaWiki verification summary
-      ansible.builtin.debug:
-        msg:
-          - "MediaWiki systemd: {{ mediawiki_service.status.ActiveState }}, {{ mediawiki_service_after.status.NRestarts }} restart(s)"
-          - "MediaWiki uninstalled wiki: 200 with its setup page and no JSON (asserted in the side effect play)"
-          - "MediaWiki siteinfo: {{ mediawiki_siteinfo.json.query.general.generator }}, sitename {{ mediawiki_siteinfo.json.query.general.sitename }}, dbtype {{ mediawiki_siteinfo.json.query.general.dbtype }} {{ mediawiki_siteinfo.json.query.general.dbversion | default('') }}"
-          - "MediaWiki login: {{ mediawiki_login.json.clientlogin.status }} as {{ mediawiki_userinfo.json.query.userinfo.name }}"
-          - "MediaWiki edit: {{ mediawiki_edit.json.edit.result }}, revision {{ mediawiki_edit.json.edit.newrevid }}, attributed to {{ mediawiki_revision.user }}"
-          - "MediaWiki database: MariaDB holds {{ mediawiki_verify_page_db_title }}, no SQLite database was created"
+        - name: Show the MediaWiki verification summary
+          ansible.builtin.debug:
+            msg:
+              - "MediaWiki systemd: {{ mediawiki_service.status.ActiveState }}, {{ mediawiki_service_after.status.NRestarts }} restart(s)"
+              - "MediaWiki uninstalled wiki: 200 with its setup page and no JSON (asserted in the side effect play)"
+              - "MediaWiki siteinfo: {{ mediawiki_siteinfo.json.query.general.generator }}, sitename {{ mediawiki_siteinfo.json.query.general.sitename }}, dbtype {{ mediawiki_siteinfo.json.query.general.dbtype }} {{ mediawiki_siteinfo.json.query.general.dbversion | default('') }}"
+              - "MediaWiki login: {{ mediawiki_login.json.clientlogin.status }} as {{ mediawiki_userinfo.json.query.userinfo.name }}"
+              - "MediaWiki edit: {{ mediawiki_edit.json.edit.result }}, revision {{ mediawiki_edit.json.edit.newrevid }}, attributed to {{ mediawiki_revision.user }}"
+              - "MediaWiki database: MariaDB holds {{ mediawiki_verify_page_db_title }}, no SQLite database was created"
 
       rescue:
         # Whatever went wrong, the reason is almost always in the systemd service log.

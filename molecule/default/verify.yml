@@ -19,65 +19,65 @@
   tasks:
     - name: Verify that MediaWiki works
       block:
-    - name: Run the checks shared by all MediaWiki scenarios
-      ansible.builtin.include_tasks:
-        file: "{{ lookup('ansible.builtin.env', 'MOLECULE_PROJECT_DIRECTORY') }}/molecule/verify_tasks.yml"
+        - name: Run the checks shared by all MediaWiki scenarios
+          ansible.builtin.include_tasks:
+            file: "{{ lookup('ansible.builtin.env', 'MOLECULE_PROJECT_DIRECTORY') }}/molecule/verify_tasks.yml"
 
-    # ------------------------------------------------------------------
-    # The page is in the database this scenario configured, not somewhere else
-    # ------------------------------------------------------------------
+        # ------------------------------------------------------------------
+        # The page is in the database this scenario configured, not somewhere else
+        # ------------------------------------------------------------------
 
-    - name: Find MediaWiki's SQLite databases
-      ansible.builtin.find:
-        paths: "{{ mediawiki_molecule_database_path }}"
-        patterns: "*.sqlite"
-      register: mediawiki_sqlite_files
+        - name: Find MediaWiki's SQLite databases
+          ansible.builtin.find:
+            paths: "{{ mediawiki_molecule_database_path }}"
+            patterns: "*.sqlite"
+          register: mediawiki_sqlite_files
 
-    # Read with a plain sqlite3 on the host, entirely outside MediaWiki: what
-    # comes out is what sits on the volume the role mounted, rather than what
-    # the wiki says about itself.
-    - name: Read the wiki's own tables out of the SQLite database
-      ansible.builtin.command:
-        argv:
-          - sqlite3
-          - "{{ mediawiki_molecule_database_path }}/{{ mediawiki_molecule_sqlite_database_file }}"
-          - "select page_title from page; select user_name from user; select old_text from text;"
-      register: mediawiki_sqlite_query
-      changed_when: false
+        # Read with a plain sqlite3 on the host, entirely outside MediaWiki: what
+        # comes out is what sits on the volume the role mounted, rather than what
+        # the wiki says about itself.
+        - name: Read the wiki's own tables out of the SQLite database
+          ansible.builtin.command:
+            argv:
+              - sqlite3
+              - "{{ mediawiki_molecule_database_path }}/{{ mediawiki_molecule_sqlite_database_file }}"
+              - "select page_title from page; select user_name from user; select old_text from text;"
+          register: mediawiki_sqlite_query
+          changed_when: false
 
-    - name: Assert the wiki lives in the SQLite database the role mounted
-      ansible.builtin.assert:
-        that:
-          - mediawiki_molecule_sqlite_database_file in (mediawiki_sqlite_files.files | map(attribute='path') | map('basename') | list)
-          - mediawiki_verify_page_db_title in mediawiki_sqlite_query.stdout_lines
-          - mediawiki_molecule_admin_wiki_username in mediawiki_sqlite_query.stdout_lines
-          - mediawiki_molecule_page_text in mediawiki_sqlite_query.stdout_lines
-        fail_msg: >-
-          {{ mediawiki_molecule_database_path }}/{{ mediawiki_molecule_sqlite_database_file }}
-          does not hold the page, the user and the text which were just written:
-          {{ mediawiki_sqlite_query.stdout_lines }}
-        success_msg: >-
-          The SQLite database the role mounted holds the page
-          ({{ mediawiki_verify_page_db_title }}), the administrator account and
-          the page text, read directly with sqlite3
+        - name: Assert the wiki lives in the SQLite database the role mounted
+          ansible.builtin.assert:
+            that:
+              - mediawiki_molecule_sqlite_database_file in (mediawiki_sqlite_files.files | map(attribute='path') | map('basename') | list)
+              - mediawiki_verify_page_db_title in mediawiki_sqlite_query.stdout_lines
+              - mediawiki_molecule_admin_wiki_username in mediawiki_sqlite_query.stdout_lines
+              - mediawiki_molecule_page_text in mediawiki_sqlite_query.stdout_lines
+            fail_msg: >-
+              {{ mediawiki_molecule_database_path }}/{{ mediawiki_molecule_sqlite_database_file }}
+              does not hold the page, the user and the text which were just written:
+              {{ mediawiki_sqlite_query.stdout_lines }}
+            success_msg: >-
+              The SQLite database the role mounted holds the page
+              ({{ mediawiki_verify_page_db_title }}), the administrator account and
+              the page text, read directly with sqlite3
 
-    # ------------------------------------------------------------------
-    # Nothing was quietly restarting while all of that was being checked
-    # ------------------------------------------------------------------
+        # ------------------------------------------------------------------
+        # Nothing was quietly restarting while all of that was being checked
+        # ------------------------------------------------------------------
 
-    - name: Run the checks shared by all MediaWiki scenarios (check restarts)
-      ansible.builtin.include_tasks:
-        file: "{{ lookup('ansible.builtin.env', 'MOLECULE_PROJECT_DIRECTORY') }}/molecule/verify_tasks_restarts.yml"
+        - name: Run the checks shared by all MediaWiki scenarios (check restarts)
+          ansible.builtin.include_tasks:
+            file: "{{ lookup('ansible.builtin.env', 'MOLECULE_PROJECT_DIRECTORY') }}/molecule/verify_tasks_restarts.yml"
 
-    - name: Show the MediaWiki verification summary
-      ansible.builtin.debug:
-        msg:
-          - "MediaWiki systemd: {{ mediawiki_service.status.ActiveState }}, {{ mediawiki_service_after.status.NRestarts }} restart(s)"
-          - "MediaWiki uninstalled wiki: 200 with its setup page and no JSON (asserted in the side effect play)"
-          - "MediaWiki siteinfo: {{ mediawiki_siteinfo.json.query.general.generator }}, sitename {{ mediawiki_siteinfo.json.query.general.sitename }}, dbtype {{ mediawiki_siteinfo.json.query.general.dbtype }} {{ mediawiki_siteinfo.json.query.general.dbversion | default('') }}"
-          - "MediaWiki login: {{ mediawiki_login.json.clientlogin.status }} as {{ mediawiki_userinfo.json.query.userinfo.name }}"
-          - "MediaWiki edit: {{ mediawiki_edit.json.edit.result }}, revision {{ mediawiki_edit.json.edit.newrevid }}, attributed to {{ mediawiki_revision.user }}"
-          - "MediaWiki database: {{ mediawiki_molecule_sqlite_database_file }} holds {{ mediawiki_verify_page_db_title }}"
+        - name: Show the MediaWiki verification summary
+          ansible.builtin.debug:
+            msg:
+              - "MediaWiki systemd: {{ mediawiki_service.status.ActiveState }}, {{ mediawiki_service_after.status.NRestarts }} restart(s)"
+              - "MediaWiki uninstalled wiki: 200 with its setup page and no JSON (asserted in the side effect play)"
+              - "MediaWiki siteinfo: {{ mediawiki_siteinfo.json.query.general.generator }}, sitename {{ mediawiki_siteinfo.json.query.general.sitename }}, dbtype {{ mediawiki_siteinfo.json.query.general.dbtype }} {{ mediawiki_siteinfo.json.query.general.dbversion | default('') }}"
+              - "MediaWiki login: {{ mediawiki_login.json.clientlogin.status }} as {{ mediawiki_userinfo.json.query.userinfo.name }}"
+              - "MediaWiki edit: {{ mediawiki_edit.json.edit.result }}, revision {{ mediawiki_edit.json.edit.newrevid }}, attributed to {{ mediawiki_revision.user }}"
+              - "MediaWiki database: {{ mediawiki_molecule_sqlite_database_file }} holds {{ mediawiki_verify_page_db_title }}"
 
       rescue:
         # Whatever went wrong, the reason is almost always in the systemd service log.
