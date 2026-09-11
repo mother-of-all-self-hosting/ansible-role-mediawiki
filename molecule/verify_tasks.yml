@@ -17,13 +17,14 @@
 # The unit is up
 # ------------------------------------------------------------------
 
-- name: Wait for the MediaWiki systemd service to become active (up to 180s)
+- name: Wait for the MediaWiki systemd services to become active (up to 180s each)
   ansible.builtin.systemd_service:
-    name: mediawiki.service
-  register: mediawiki_service
-  until: mediawiki_service.status.ActiveState == 'active'
+    name: "{{ item }}"
+  register: mediawiki_services
+  until: mediawiki_services.status.ActiveState == 'active'
   retries: 36
   delay: 5
+  loop: "{{ mediawiki_verify_units }}"
   # So that giving up is reported by the assertion below rather than as a
   # wall of systemd unit properties.
   failed_when: false
@@ -31,17 +32,20 @@
 # `Restart=always` in the systemd unit means that even a container which crashes
 # and gets restarted reads as active here, so this is a precondition rather than
 # a result.
-- name: Assert the MediaWiki systemd service is active
+- name: Assert the MediaWiki systemd services are active
   ansible.builtin.assert:
-    that: mediawiki_service.status.ActiveState == 'active'
-    fail_msg: "mediawiki.service is not active ({{ mediawiki_service.status.ActiveState }})"
-    success_msg: "mediawiki.service is active"
+    that: mediawiki_services.results | map(attribute='status.ActiveState') | unique | list == ['active']
+    fail_msg: >-
+      Not every service is active:
+      {{ dict(mediawiki_verify_units | zip(mediawiki_services.results | map(attribute='status.ActiveState'))) }}
+    success_msg: "Every systemd service is active"
 
-- name: Retrieve the MediaWiki systemd service log for debugging
+- name: Retrieve the MediaWiki systemd services log for debugging
   when: mediawiki_debug_service_enabled | bool
   ansible.builtin.command:
-    cmd: journalctl --no-pager --output=cat --unit=mediawiki.service
+    cmd: "journalctl --no-pager --output=cat --unit={{ item }}"
   changed_when: false
+  loop: "{{ mediawiki_verify_units }}"
 
 # ------------------------------------------------------------------
 # The wiki is installed, and is the version this role pins
