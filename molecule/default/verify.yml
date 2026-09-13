@@ -64,10 +64,6 @@
               ({{ mediawiki_verify_page_db_title }}), the administrator account and
               the page text, read directly with sqlite3
 
-        # ------------------------------------------------------------------
-        # Nothing was quietly restarting while all of that was being checked
-        # ------------------------------------------------------------------
-
         - name: Run the checks shared by all MediaWiki scenarios (check restarts)
           ansible.builtin.include_tasks:
             file: "{{ lookup('ansible.builtin.env', 'MOLECULE_PROJECT_DIRECTORY') }}/molecule/verify_tasks_restarts.yml"
@@ -76,6 +72,7 @@
           ansible.builtin.debug:
             msg:
               - "MediaWiki systemd: {% for unit, state in mediawiki_verify_units | zip(mediawiki_services.results | map(attribute='status.ActiveState')) %}{{ unit }} ({{ state }}){% if not loop.last %}, {% endif %}{% endfor %}"
+              - "MediaWiki restarts: {% for unit, restarts in mediawiki_verify_units | zip(mediawiki_restarts_after.results | map(attribute='status.NRestarts')) %}{{ restarts }} ({{ unit }}){% if not loop.last %}, {% endif %}{% endfor %}"
               - "MediaWiki uninstalled wiki: 200 with its setup page and no JSON (asserted in the side effect play)"
               - "MediaWiki siteinfo: {{ mediawiki_siteinfo.json.query.general.generator }}, sitename {{ mediawiki_siteinfo.json.query.general.sitename }}, dbtype {{ mediawiki_siteinfo.json.query.general.dbtype }} {{ mediawiki_siteinfo.json.query.general.dbversion | default('') }}"
               - "MediaWiki login: {{ mediawiki_login.json.clientlogin.status }} as {{ mediawiki_userinfo.json.query.userinfo.name }}"
