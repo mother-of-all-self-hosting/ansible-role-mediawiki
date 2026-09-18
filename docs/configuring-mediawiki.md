@@ -178,7 +178,7 @@ mediawiki_config_additional_configurations: |
   $wgGroupPermissions['*']['createaccount'] = false;
 ```
 
-See [the official documentation](https://www.mediawiki.org/wiki/Manual:Configuration_settings) for a complete list of MediaWiki's config options that you could put in `mediawiki_config_additional_configurations`.
+See [the official documentation](https://www.mediawiki.org/wiki/Manual:Configuration_settings) for a complete list of MediaWiki's config options that you can put in `mediawiki_config_additional_configurations`.
 
 #### Enabling email features
 
