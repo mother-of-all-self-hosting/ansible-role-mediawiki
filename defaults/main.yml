@@ -152,6 +152,12 @@ mediawiki_container_extra_arguments: "{{ mediawiki_container_extra_arguments_aut
 mediawiki_container_extra_arguments_auto: []
 mediawiki_container_extra_arguments_custom: []
 
+# A list of extra arguments to pass to the process inside the container
+# Example: ['--SOME_ARGUMENT']
+mediawiki_process_extra_arguments: "{{ mediawiki_process_extra_arguments_auto + mediawiki_process_extra_arguments_custom }}"
+mediawiki_process_extra_arguments_auto: []
+mediawiki_process_extra_arguments_custom: []
+
 # Specifies the value of the `X-XSS-Protection` header
 # Stops pages from loading when they detect reflected cross-site scripting (XSS) attacks.
 #
