@@ -28,7 +28,7 @@ MediaWiki is a popular free and open-source wiki software.
 See the project's [documentation](https://www.mediawiki.org/wiki/MediaWiki) to learn what MediaWiki does and why it might be useful to you.
 
 >[!NOTE]
-> While [the Docker's official image](https://hub.docker.com/_/mediawiki) is used by this role, it is *not* the official image by MediaWiki. See [this page](https://www.mediawiki.org/wiki/Docker/Docker_Hub) for more details.
+> While [the Docker's official image](https://hub.docker.com/_/mediawiki) is used by this role, it is *not* the official image by MediaWiki. Refer to [this page](https://www.mediawiki.org/wiki/Docker/Docker_Hub) for more details.
 
 ## Prerequisites
 
@@ -113,7 +113,7 @@ mediawiki_database_type: mysql
 Set `postgres` to use Postgres and `sqlite` to use SQLite, respectively. The SQLite database is stored in the directory specified with `mediawiki_database_path`.
 
 >[!WARNING]
-> `postgres` requires a container image with the `pgsql` PHP extension, which the official MediaWiki image does not have. See [Prerequisites](#prerequisites) above.
+> `postgres` requires a container image with the `pgsql` PHP extension, which the official MediaWiki image does not have. Refer to [Prerequisites](#prerequisites) above.
 
 For other settings, check variables such as `mediawiki_database_*` on [`defaults/main.yml`](../defaults/main.yml).
 
@@ -126,7 +126,7 @@ mediawiki_config_logos_1x: 1X_LOGO_PATH_HERE
 mediawiki_config_logos_icon: ICON_LOGO_PATH_HERE
 ```
 
-Both file path and URL can be set to logo paths. See [this page](https://www.mediawiki.org/wiki/Manual:$wgLogos) on the manual about configuration for logos as well.
+Both file path and URL can be set to logo paths. Refer to [this page](https://www.mediawiki.org/wiki/Manual:$wgLogos) on the manual about configuration for logos as well.
 
 #### Loading external icon files
 
@@ -159,7 +159,7 @@ To change the default language, add the following configuration to your `vars.ym
 mediawiki_config_lang: LANGUAGE_CODE_HERE
 ```
 
-See [this page](https://www.mediawiki.org/wiki/Manual:$wgLanguageCode) on the manual for details.
+Refer to [this page](https://www.mediawiki.org/wiki/Manual:$wgLanguageCode) on the manual for details.
 
 ### Extending the configuration
 
@@ -171,14 +171,14 @@ Take a look at:
 
 As the configuration settings specified on that file are basic despite being sufficient for starting up the instance, you would probably want to add other standard settings listed on [this section](https://www.mediawiki.org/wiki/Manual:LocalSettings.php#Standard_settings) on the manual to `mediawiki_config_additional_configurations`.
 
-For example, you can configure permissions to disable user registration (see [this section](https://www.mediawiki.org/wiki/Manual:Preventing_access#Restrict_account_creation) on the manual about restricting account creation) by adding the following configuration to your `vars.yml` file:
+For example, you can configure permissions to disable user registration (refer to [this section](https://www.mediawiki.org/wiki/Manual:Preventing_access#Restrict_account_creation) on the manual about restricting account creation) by adding the following configuration to your `vars.yml` file:
 
 ```yaml
 mediawiki_config_additional_configurations: |
   $wgGroupPermissions['*']['createaccount'] = false;
 ```
 
-See [the official documentation](https://www.mediawiki.org/wiki/Manual:Configuration_settings) for a complete list of MediaWiki's config options that you can put in `mediawiki_config_additional_configurations`.
+Refer to [the official documentation](https://www.mediawiki.org/wiki/Manual:Configuration_settings) for a complete list of MediaWiki's config options that you can put in `mediawiki_config_additional_configurations`.
 
 #### Enabling email features
 
@@ -267,7 +267,7 @@ After confirming that dependencies are fulfilled on your side, you can run the p
 ansible-playbook -i inventory/hosts setup.yml --tags=update-mediawiki
 ```
 
-It should be noted that MediaWiki supports upgrades from up to two LTS releases ago (see [this section](https://www.mediawiki.org/wiki/Upgrading#Check_requirements) on the manual). Upgrading from older versions has to be performed step by step, by editing the `mediawiki_version` variable manually.
+It should be noted that MediaWiki supports upgrades from up to two LTS releases ago (refer to [this section](https://www.mediawiki.org/wiki/Upgrading#Check_requirements) on the manual). Upgrading from older versions has to be performed step by step, by editing the `mediawiki_version` variable manually.
 
 ## Troubleshooting
 

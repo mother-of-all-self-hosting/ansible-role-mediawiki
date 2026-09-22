@@ -53,7 +53,7 @@ Tests a standard MediaWiki installation, backed by SQLite.
 
 Tests a standard MediaWiki installation with the MariaDB database.
 
-There is deliberately no Postgres scenario: the official MediaWiki container image ships no `pgsql` PHP extension, so `run.php install --dbtype=postgres` cannot connect to a Postgres server at all. See [the documentation](../docs/configuring-mediawiki.md#prerequisites).
+There is deliberately no Postgres scenario: the official MediaWiki container image ships no `pgsql` PHP extension, so `run.php install --dbtype=postgres` cannot connect to a Postgres server at all. Refer to [the documentation](../docs/configuring-mediawiki.md#prerequisites).
 
 ## What the scenarios check
 
