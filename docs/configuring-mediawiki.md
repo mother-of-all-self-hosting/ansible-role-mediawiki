@@ -102,7 +102,7 @@ mediawiki_config_sitename: YOUR_WIKI_NAME_HERE
 
 ### Specify database
 
-It is necessary to select database used by MediaWiki from a MySQL compatible database, Postgres, and SQLite.
+MediaWiki can use either a MySQL compatible database, Postgres, or SQLite, and you need to choose one.
 
 To use a MySQL compatible database, add the following configuration to your `vars.yml` file:
 
