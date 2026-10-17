@@ -39,7 +39,7 @@ When selecting a database, check [this compatibility table](https://www.mediawik
 If you are looking for Ansible roles for a MySQL compatible server or Postgres, you can check out [ansible-role-mariadb](https://github.com/mother-of-all-self-hosting/ansible-role-mariadb) and [ansible-role-postgres](https://github.com/mother-of-all-self-hosting/ansible-role-postgres), both of which are maintained by the [Mother-of-All-Self-Hosting (MASH)](https://github.com/mother-of-all-self-hosting) team.
 
 >[!WARNING]
-> Postgres cannot be used with the container image this role installs. The official MediaWiki image ships PHP without the `pgsql` extension (`php -m` lists `mysqli`, `pdo_sqlite` and `sqlite3`, and no Postgres driver, in every variant: `apache`, `fpm` and `fpm-alpine`), so `run.php install --dbtype=postgres` stops with *"Postgres functions missing, have you compiled PHP with the --with-pgsql option?"*. Setting `mediawiki_database_type: postgres` therefore only works with a custom image which adds that extension, via `mediawiki_container_image` or `mediawiki_container_image_self_build`.
+> Postgres cannot be used with the container image this role installs. The official MediaWiki image ships PHP without the `pgsql` extension. Setting `mediawiki_database_type: postgres` only works with a custom image which adds that extension, via `mediawiki_container_image` or `mediawiki_container_image_self_build`.
 >
 > Even where it can be used, Postgres is [not recommended](https://www.mediawiki.org/wiki/Compatibility#Database): [this page](https://www.mediawiki.org/wiki/Postgres) on the manual describes the Postgres support as "second-class" and warns that you may run into some bugs.
 
