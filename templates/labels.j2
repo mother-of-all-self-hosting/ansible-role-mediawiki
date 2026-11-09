@@ -20,7 +20,7 @@ traefik.http.middlewares.{{ mediawiki_identifier }}-basic-auth.basicauth.users={
 {% endif %}
 
 {% if mediawiki_container_labels_traefik_path_prefix != '/' %}
-traefik.http.middlewares.{{ mediawiki_identifier }}-slashless-redirect.redirectregex.regex=^({{ mediawiki_container_labels_traefik_path_prefix | quote }})$
+traefik.http.middlewares.{{ mediawiki_identifier }}-slashless-redirect.redirectregex.regex=^(https?://[^/]+{{ mediawiki_container_labels_traefik_path_prefix | regex_escape }})$
 traefik.http.middlewares.{{ mediawiki_identifier }}-slashless-redirect.redirectregex.replacement=${1}/
 {% set middlewares = middlewares + [mediawiki_identifier + '-slashless-redirect'] %}
 {% endif %}
