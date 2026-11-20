@@ -23,9 +23,6 @@
   with_items:
     - mediawiki_uid
     - mediawiki_gid
-    - mediawiki_hostname
-    - mediawiki_path_prefix
-    - mediawiki_container_network
     - mediawiki_database_type
     - mediawiki_config_sitename
 
